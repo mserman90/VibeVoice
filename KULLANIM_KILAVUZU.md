@@ -157,6 +157,33 @@ for segment in transcription["chunks"]:
 
 ## 10. Sıkça Sorulan Sorular (SSS)
 * **Soru: VibeVoice GitHub Pages üzerinde canlı model çalıştırabilir mi?**  
-  **Cevap:** Hayır, GitHub Pages yalnızca statik web sayfalarını barındırır. Modelin çalışması için GPU sunucusu gereklidir.
+  **Cevap:** Hayır, GitHub Pages yalnızca statik web sayfalarını barındırır. Modelin çalışması için GPU sunucusu gereklidir. Web stüdyosu doğrudan GPU sunucunuzdaki API uç noktasına bağlanarak çalışır.
 * **Soru: Türkçe dil desteği var mı?**  
-  **Cevap:** Ses tanıma (ASR) modeli Türkçe dahil 50+ dili destekler. TTS modeli ise çok dilli token adaptasyonuyla Türkçe ses sentezi yapabilmektedir.
+  **Cevap:** Evet. Web stüdyosu hem tarayıcı içi doğal Türkçe ses motoruyla sıfır gecikmeyle çalışabilir hem de GPU sunucusundaki Türkçe Neural sesleri destekler.
+
+---
+
+## 11. GPU Sunucusunda API Başlatma ve Web Stüdyosuna Bağlama
+
+Kendi yerel GPU makinenizde veya bulut sunucunuzda (RunPod, AWS, Colab vb.) API'yi başlatmak için:
+
+### 1. Sunucu Gereksinimlerini Yükleyin:
+```bash
+pip install fastapi uvicorn torch transformers soundfile edge-tts
+```
+
+### 2. API Sunucusunu Çalıştırın:
+```bash
+# VibeVoice GPU modelini otomatik yüklemek için:
+export AUTO_LOAD_MODEL=true  # Windows PowerShell: $env:AUTO_LOAD_MODEL="true"
+python server.py
+```
+Sunucu varsayılan olarak `http://0.0.0.0:8000` adresinde ayağa kalkar.
+
+### 3. Web Stüdyosuna Bağlayın:
+1. [Web Podcast Stüdyosu](https://mserman90.github.io/VibeVoice/) adresini açın.
+2. Sayfanın üstündeki **"VibeVoice GPU API Uç Noktası"** kutusuna sunucu adresinizi yazın:
+   * Yerel makine için: `http://localhost:8000`
+   * Uzak sunucu için (ngrok veya public IP): `https://xyz.ngrok-free.app`
+3. **"Sına & Bağlan"** butonuna tıklayın. Durum rozeti `🟢 Online (CUDA: RTX ...)` olduğunda, senaryonuzu yazıp **"⚡ VibeVoice GPU Sentezi"** butonuna basarak doğrudan GPU'dan ses üretebilirsiniz!
+

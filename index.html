@@ -388,6 +388,53 @@
     font-size: 0.85rem;
   }
 
+  /* GPU API Uç Noktası Barı */
+  .gpu-endpoint-bar {
+    background: #0d1526;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 18px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .gpu-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 320px;
+  }
+  .gpu-url-input {
+    flex: 1;
+    max-width: 360px;
+    background: #060911;
+    border: 1px solid var(--border-light);
+    color: #38bdf8;
+    padding: 7px 12px;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .gpu-url-input:focus { border-color: var(--primary); }
+  .gpu-badge-status {
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .status-online { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35); }
+  .status-offline { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35); }
+  .status-checking { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.35); }
+
   /* Üretim Butonları Çifti */
   .action-buttons-group {
     display: grid;
@@ -698,6 +745,21 @@
         <div class="stat-badge"><i class="fa-solid fa-flag" style="color:#f43f5e;"></i> Doğal Türkçe Ses Motoru</div>
         <div class="stat-badge"><i class="fa-solid fa-users" style="color:#10b981;"></i> 4 Karakterli Kadro</div>
         <div class="stat-badge"><i class="fa-solid fa-music" style="color:#eab308;"></i> Müzik & Ambiyans Miksajı</div>
+      </div>
+    </div>
+
+    <!-- GPU API Uç Noktası Barı -->
+    <div class="gpu-endpoint-bar">
+      <div class="gpu-bar-left">
+        <i class="fa-solid fa-server" style="color:#10b981;"></i>
+        <span style="font-weight:700; font-size:0.9rem;">VibeVoice GPU API Uç Noktası:</span>
+        <input type="text" id="gpu-endpoint-url" value="http://localhost:8000" placeholder="http://localhost:8000 veya https://..." class="gpu-url-input">
+        <button class="btn-sm btn-api" onclick="checkGpuHealth()">
+          <i class="fa-solid fa-plug"></i> Sına & Bağlan
+        </button>
+      </div>
+      <div id="gpu-status-badge" class="gpu-badge-status status-checking">
+        <i class="fa-solid fa-circle-dot"></i> <span id="gpu-status-label">Kontrol Ediliyor...</span>
       </div>
     </div>
 
@@ -1289,34 +1351,155 @@ function updatePlayButton(playing){
   icon.className = playing ? "fa-solid fa-pause" : "fa-solid fa-play";
 }
 
-/* ==================== VİBEVOİCE GPU SENTEZİ ==================== */
-function startVibeVoiceGeneration(){
+/* ==================== VİBEVOİCE GPU SENTEZİ & GERÇEK API ÇAĞRISI ==================== */
+let lastGpuAudioBlob = null;
+
+async function checkGpuHealth(){
+  let endpoint = document.getElementById('gpu-endpoint-url').value.trim();
+  if(!endpoint) endpoint = "http://localhost:8000";
+  endpoint = endpoint.replace(/\/+$/, "");
+  localStorage.setItem('vibevoice_gpu_endpoint', endpoint);
+
+  const badge = document.getElementById('gpu-status-badge');
+  const label = document.getElementById('gpu-status-label');
+  badge.className = "gpu-badge-status status-checking";
+  label.innerText = "Bağlanıyor...";
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+    const res = await fetch(`${endpoint}/health`, { method: 'GET', signal: controller.signal });
+    clearTimeout(timeoutId);
+
+    if(res.ok){
+      const data = await res.json();
+      badge.className = "gpu-badge-status status-online";
+      const dev = data.cuda_available ? `CUDA: ${data.device}` : (data.device || "Aktif");
+      label.innerText = `Online (${dev})`;
+    } else {
+      badge.className = "gpu-badge-status status-offline";
+      label.innerText = `HTTP ${res.status}`;
+    }
+  } catch(e){
+    badge.className = "gpu-badge-status status-offline";
+    label.innerText = "Çevrimdışı / Ulaşılamadı";
+  }
+}
+
+async function startVibeVoiceGeneration(){
+  const script = document.getElementById('script-input').value.trim();
+  if(!script){
+    alert("Lütfen önce bir podcast senaryosu yazın.");
+    return;
+  }
+
   stopAllAudio();
   playbackMode = 'audio';
-
-  const modal = document.getElementById('voice-modal');
-  const script = document.getElementById('script-input').value.trim();
   parseScript(script);
   renderTranscriptStream();
 
-  document.getElementById('player-status-badge').innerText = "VibeVoice GPU";
-  document.getElementById('track-title').innerText = "VibeVoice Orijinal Çıktı";
+  let endpoint = document.getElementById('gpu-endpoint-url').value.trim();
+  if(!endpoint) endpoint = "http://localhost:8000";
+  endpoint = endpoint.replace(/\/+$/, "");
+  localStorage.setItem('vibevoice_gpu_endpoint', endpoint);
 
-  const a = document.getElementById('main-audio');
-  a.src = "assets/audio/3p_gpt5.mp3";
-  a.load();
-  a.play();
-  updatePlayButton(true);
-  initWaveformVisualizer();
+  document.getElementById('player-status-badge').innerText = "GPU'ya Gönderiliyor...";
+  document.getElementById('player-status-badge').style.background = "rgba(59, 130, 246, 0.25)";
+  document.getElementById('player-status-badge').style.color = "#60a5fa";
+  document.getElementById('track-title').innerText = "VibeVoice GPU Sentezi (İşleniyor...)";
 
-  a.ontimeupdate = () => {
-    const cur = a.currentTime;
-    const dur = a.duration || 1;
-    const idx = Math.min(parsedLines.length - 1, Math.floor((cur / dur) * parsedLines.length));
-    highlightTranscript(idx);
-    document.getElementById('current-speaker-display').innerText = `Konuşmacı: ${parsedLines[idx]?.speaker || 'Mert'}`;
+  const payload = {
+    title: "VibeVoice GPU Podcast",
+    speakers: [
+      { id: "Mert", name: "Mert", voice: "male" },
+      { id: "Selin", name: "Selin", voice: "female" },
+      { id: "Can", name: "Can", voice: "male" },
+      { id: "Deniz", name: "Deniz", voice: "neutral" }
+    ],
+    script: script,
+    language: "tr",
+    temperature: parseFloat(document.getElementById('temp-slider')?.value || 0.7),
+    bg_music: document.getElementById('bg-music')?.value || "lofi"
   };
-  a.onended = () => { updatePlayButton(false); };
+
+  try {
+    console.log(`[VibeVoice] GPU Üretim isteği gönderiliyor: ${endpoint}/api/generate-podcast`);
+    const res = await fetch(`${endpoint}/api/generate-podcast`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': '*/*'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if(!res.ok){
+      let errText = "";
+      try {
+        const errJson = await res.json();
+        errText = errJson.detail || JSON.stringify(errJson);
+      } catch(e){
+        errText = await res.text();
+      }
+      throw new Error(`GPU Sunucusu Hatası (${res.status}): ${errText}`);
+    }
+
+    const contentType = res.headers.get('content-type') || "";
+    if(contentType.includes('audio') || contentType.includes('octet-stream')){
+      const blob = await res.blob();
+      lastGpuAudioBlob = blob;
+      const audioUrl = URL.createObjectURL(blob);
+      
+      const a = document.getElementById('main-audio');
+      a.src = audioUrl;
+      a.load();
+      a.play();
+      updatePlayButton(true);
+      initWaveformVisualizer();
+
+      document.getElementById('player-status-badge').innerText = "🟢 GPU Çıktısı (Canlı)";
+      document.getElementById('player-status-badge').style.background = "rgba(16, 185, 129, 0.2)";
+      document.getElementById('player-status-badge').style.color = "#34d399";
+      document.getElementById('track-title').innerText = "VibeVoice GPU Podcast (Sentezlendi)";
+
+      a.ontimeupdate = () => {
+        const cur = a.currentTime;
+        const dur = a.duration || 1;
+        const idx = Math.min(parsedLines.length - 1, Math.floor((cur / dur) * parsedLines.length));
+        highlightTranscript(idx);
+        document.getElementById('current-speaker-display').innerText = `Konuşmacı: ${parsedLines[idx]?.speaker || 'Mert'}`;
+        
+        const cm = Math.floor(cur / 60), cs = Math.floor(cur % 60);
+        const dm = Math.floor(dur / 60), ds = Math.floor(dur % 60);
+        document.getElementById('current-line-counter').innerText = `${cm < 10 ? '0' : ''}${cm}:${cs < 10 ? '0' : ''}${cs} / ${dm < 10 ? '0' : ''}${dm}:${ds < 10 ? '0' : ''}${ds}`;
+      };
+
+      a.onended = () => { updatePlayButton(false); };
+    } else {
+      const jsonRes = await res.json();
+      alert(`GPU Sunucusu Yanıtı: ${jsonRes.message || 'İstek işlendi.'}`);
+    }
+
+  } catch(err){
+    console.error("[VibeVoice GPU Hatası]", err);
+    document.getElementById('player-status-badge').innerText = "GPU Bağlantı Hatası";
+    document.getElementById('player-status-badge').style.background = "rgba(239, 68, 68, 0.2)";
+    document.getElementById('player-status-badge').style.color = "#f87171";
+
+    const useFallback = confirm(
+      `⚠️ GPU Sunucusuna Bağlanılamadı!\n\n` +
+      `Uç Nokta: ${endpoint}\n` +
+      `Hata: ${err.message}\n\n` +
+      `Çözüm İpuçları:\n` +
+      `1. GPU sunucunuzda 'python server.py' komutunun çalıştığından emin olun.\n` +
+      `2. Eğer GitHub Pages (HTTPS) üzerinden çalıştırıyorsanız, yerel sunucunuz için ngrok / Cloudflare Tunnel kullanabilirsiniz (örn. https://xyz.ngrok-free.app).\n\n` +
+      `Dahili "🇹🇷 Türkçe Ses Motoru" ile hemen seslendirmek ister misiniz?`
+    );
+
+    if(useFallback){
+      startTurkishSpeech();
+    }
+  }
 }
 
 /* ==================== SENKRONİZE TRANSKRİPT ==================== */
@@ -1480,6 +1663,13 @@ function downloadSrt(){
 }
 
 function downloadAudioSample(){
+  if(lastGpuAudioBlob){
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(lastGpuAudioBlob);
+    a.download = "VibeVoice_GPU_Podcast.wav";
+    a.click();
+    return;
+  }
   const a = document.createElement('a');
   a.href = "assets/audio/3p_gpt5.mp3";
   a.download = "VibeVoice_Podcast_Ornek.mp3";
@@ -1556,6 +1746,13 @@ function initCases(){
 window.addEventListener('DOMContentLoaded', () => {
   loadTemplate('tr-ai');
   initWaveformVisualizer();
+
+  const savedEndpoint = localStorage.getItem('vibevoice_gpu_endpoint');
+  if(savedEndpoint){
+    const inp = document.getElementById('gpu-endpoint-url');
+    if(inp) inp.value = savedEndpoint;
+  }
+  checkGpuHealth();
 });
 </script>
 

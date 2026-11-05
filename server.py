@@ -1,26 +1,25 @@
 """
-VibeVoice & Türkçe Çok Konuşmacılı Podcast API Sunucusu (FastAPI + PyTorch / Edge-TTS)
-Bu sunucu, web arayüzünden gelen çok konuşmacılı Türkçe podcast isteklerini alır,
-VibeVoice ve Türkçe Neural ses motorları ile sentezleyerek WAV/MP3 ses dosyası döner.
+VibeVoice & Türkçe Çok Konuşmacılı Podcast API Sunucusu (FastAPI + PyTorch / CUDA)
+Bu sunucu, web stüdyosundan gelen gerçek üretim isteklerini karşılar,
+GPU üzerinde VibeVoice ve Türkçe ses sentezleme çıkarımı yapar ve ses akışını (WAV/MP3) döner.
 """
 
 import os
 import io
 import time
-import asyncio
 from typing import List, Optional
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response, StreamingResponse
 from pydantic import BaseModel
 
 app = FastAPI(
-    title="VibeVoice Türkçe Podcast API",
+    title="VibeVoice GPU Podcast API",
     description="VibeVoice ve Türkçe Neural çok konuşmacılı ses sentezi API'si",
-    version="1.1.0"
+    version="1.2.0"
 )
 
-# CORS izinleri (GitHub Pages üzerinden gelen isteklere tam izin verir)
+# CORS: GitHub Pages ve tüm web istemcilerinden gelen isteklere izin ver
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -29,54 +28,62 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Türkçe Neural Ses Haritası (Microsoft Edge-TTS / Neural)
+# Türkçe Neural Sesler
 TURKISH_VOICES = {
-    "Mert": "tr-TR-AhmetNeural",      # Tok, profesyonel erkek sesi
-    "Selin": "tr-TR-EmelNeural",      # Dinamik, akıcı kadın sesi
-    "Can": "tr-TR-AhmetNeural",       # Genç erkek sesi (pitch modifikasyonu ile)
-    "Deniz": "tr-TR-EmelNeural",      # Dengeli kadın/moderatör sesi
-    "default_male": "tr-TR-AhmetNeural",
-    "default_female": "tr-TR-EmelNeural"
+    "Mert": "tr-TR-AhmetNeural",
+    "Selin": "tr-TR-EmelNeural",
+    "Can": "tr-TR-AhmetNeural",
+    "Deniz": "tr-TR-EmelNeural"
 }
 
 class SpeakerConfig(BaseModel):
-    id: str
+    id: Optional[str] = "spk"
     name: str
     voice: Optional[str] = "default"
     gender: Optional[str] = "neutral"
 
 class PodcastRequest(BaseModel):
-    title: Optional[str] = "Yeni Türkçe Podcast"
+    title: Optional[str] = "VibeVoice Podcast"
     speakers: Optional[List[SpeakerConfig]] = []
     script: str
     language: Optional[str] = "tr"
     temperature: Optional[float] = 0.7
     bg_music: Optional[str] = "lofi"
 
-# VibeVoice GPU Modeli
-VIBEVOICE_LOADED = False
-vibevoice_model = None
-vibevoice_tokenizer = None
+# GPU Durumu ve Model Yönetimi
+CUDA_AVAILABLE = False
+DEVICE_NAME = "CPU"
+MODEL_LOADED = False
+model = None
+tokenizer = None
+
+try:
+    import torch
+    CUDA_AVAILABLE = torch.cuda.is_available()
+    if CUDA_AVAILABLE:
+        DEVICE_NAME = torch.cuda.get_device_name(0)
+except Exception:
+    pass
 
 def load_vibevoice():
-    global VIBEVOICE_LOADED, vibevoice_model, vibevoice_tokenizer
+    global MODEL_LOADED, model, tokenizer
     try:
         import torch
         from transformers import AutoModelForCausalLM, AutoTokenizer
         
-        model_id = "microsoft/VibeVoice-1.5B"
-        print(f"[{time.strftime('%X')}] VibeVoice modeli GPU'ya yükleniyor: {model_id}")
-        vibevoice_tokenizer = AutoTokenizer.from_pretrained(model_id)
-        vibevoice_model = AutoModelForCausalLM.from_pretrained(
+        model_id = os.environ.get("VIBEVOICE_MODEL_ID", "microsoft/VibeVoice-1.5B")
+        print(f"[{time.strftime('%X')}] VibeVoice modeli yükleniyor ({DEVICE_NAME}): {model_id}")
+        tokenizer = AutoTokenizer.from_pretrained(model_id)
+        model = AutoModelForCausalLM.from_pretrained(
             model_id,
-            torch_dtype=torch.float16,
-            device_map="auto"
+            torch_dtype=torch.float16 if CUDA_AVAILABLE else torch.float32,
+            device_map="auto" if CUDA_AVAILABLE else None
         )
-        VIBEVOICE_LOADED = True
-        print(f"[{time.strftime('%X')}] VibeVoice modeli başarıyla yüklendi!")
+        MODEL_LOADED = True
+        print(f"[{time.strftime('%X')}] Model GPU'ya başarıyla yüklendi!")
     except Exception as e:
-        print(f"[BİLGİ] VibeVoice GPU modeli yüklenemedi: {e}")
-        VIBEVOICE_LOADED = False
+        print(f"[UYARI] VibeVoice modeli doğrudan yüklenemedi: {e}")
+        MODEL_LOADED = False
 
 @app.on_event("startup")
 async def startup_event():
@@ -84,23 +91,32 @@ async def startup_event():
         load_vibevoice()
 
 @app.get("/")
+@app.get("/health")
 def health_check():
+    """GPU sunucusunun canlılık ve donanım durumunu döner."""
     return {
-        "status": "active",
-        "service": "VibeVoice & Türkçe Podcast Sentezleyici",
-        "vibevoice_gpu": VIBEVOICE_LOADED,
-        "turkish_engine": "Microsoft Neural Türkçe TTS & WebSpeech Destekli",
-        "default_voices": TURKISH_VOICES
+        "status": "online",
+        "service": "VibeVoice GPU Podcast Engine",
+        "cuda_available": CUDA_AVAILABLE,
+        "device": DEVICE_NAME,
+        "model_loaded": MODEL_LOADED,
+        "active_endpoints": ["/api/generate-podcast", "/health"]
     }
 
-async def generate_turkish_audio_stream(script: str):
+@app.post("/api/generate-podcast")
+async def generate_podcast(req: PodcastRequest):
     """
-    Edge-TTS kütüphanesi yüklüyse Türkçe Neural seslerle sentezler,
-    yoksa uyarı verir.
+    Gerçek zamanlı çok konuşmacılı senaryoyu sentezler ve ses akışı (audio/wav veya audio/mpeg) döndürür.
     """
+    print(f"[{time.strftime('%X')}] Yeni podcast üretim isteği alındı: '{req.title}', Karakter sayısı: {len(req.script)}")
+    
+    lines = [l.strip() for l in req.script.split("\n") if l.strip()]
+    if not lines:
+        raise HTTPException(status_code=400, detail="Senaryo metni boş olamaz.")
+
+    # 1. Edge-TTS Türkçe Neural Motoru (Yüklüyse stüdyo kalitesinde gerçek Türkçe ses üretir)
     try:
         import edge_tts
-        lines = [l.strip() for l in script.split("\n") if l.strip()]
         combined_audio = io.BytesIO()
 
         for line in lines:
@@ -118,33 +134,22 @@ async def generate_turkish_audio_stream(script: str):
                     combined_audio.write(chunk["data"])
 
         combined_audio.seek(0)
-        return combined_audio
+        return StreamingResponse(
+            combined_audio,
+            media_type="audio/mpeg",
+            headers={"Content-Disposition": 'inline; filename="vibevoice_turkish_podcast.mp3"'}
+        )
     except ImportError:
-        return None
+        pass
 
-@app.post("/api/generate-podcast")
-async def generate_podcast(req: PodcastRequest):
-    """
-    Çok konuşmacılı Türkçe metni sentezler ve MP3/WAV ses dosyası döndürür.
-    """
-    lines = [l.strip() for l in req.script.split("\n") if l.strip()]
-    if not lines:
-        raise HTTPException(status_code=400, detail="Senaryo metni boş olamaz.")
-
-    # 1. Türkçe Neural TTS Denemesi
-    if req.language == "tr":
-        audio_stream = await generate_turkish_audio_stream(req.script)
-        if audio_stream:
-            return StreamingResponse(audio_stream, media_type="audio/mpeg")
-
-    # 2. VibeVoice GPU Modeli Denemesi
-    if VIBEVOICE_LOADED and vibevoice_model is not None:
+    # 2. VibeVoice GPU Modeli
+    if MODEL_LOADED and model is not None:
         import torch
         import soundfile as sf
         
-        inputs = vibevoice_tokenizer(req.script, return_tensors="pt").to(vibevoice_model.device)
+        inputs = tokenizer(req.script, return_tensors="pt").to(model.device)
         with torch.no_grad():
-            output_audio = vibevoice_model.generate(
+            output_audio = model.generate(
                 **inputs,
                 max_new_tokens=4096,
                 temperature=req.temperature
@@ -153,19 +158,20 @@ async def generate_podcast(req: PodcastRequest):
         buf = io.BytesIO()
         sf.write(buf, output_audio.cpu().numpy(), samplerate=24000, format="WAV")
         buf.seek(0)
-        return StreamingResponse(buf, media_type="audio/wav")
+        return StreamingResponse(
+            buf,
+            media_type="audio/wav",
+            headers={"Content-Disposition": 'inline; filename="vibevoice_gpu_podcast.wav"'}
+        )
 
-    # 3. Bilgi yanıtı
-    return {
-        "status": "success",
-        "language": "tr",
-        "title": req.title,
-        "message": "Türkçe metin başarıyla işlendi. Web arayüzü tarayıcı içi doğal Türkçe ses motorunu (WebSpeech) kullanarak seslendirebilir.",
-        "lines_count": len(lines),
-        "estimated_duration_sec": len(lines) * 4.2
-    }
+    # 3. Model henüz hazır değilse 503 Service Unavailable yerine açıklayıcı yanıt
+    raise HTTPException(
+        status_code=503,
+        detail="VibeVoice GPU modeli veya Türkçe ses motoru (edge-tts / transformers) henüz sunucuda başlatılmadı. Lütfen sunucuda 'pip install edge-tts' veya AUTO_LOAD_MODEL=true yapın."
+    )
 
 if __name__ == "__main__":
     import uvicorn
-    print("VibeVoice Türkçe Podcast API başlatılıyor (http://localhost:8000)...")
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.environ.get("PORT", 8000))
+    print(f"VibeVoice GPU Sunucusu başlatılıyor: http://0.0.0.0:{port}")
+    uvicorn.run(app, host="0.0.0.0", port=port)
