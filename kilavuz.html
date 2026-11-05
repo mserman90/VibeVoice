@@ -539,9 +539,13 @@ for chunk in result["chunks"]:
     <section id="faq">
       <h2><i class="fa-solid fa-circle-question" style="color:var(--accent);"></i> 9. Sıkça Sorulan Sorular (FAQ)</h2>
       
-      <h3>VibeVoice Türkçe dilini destekliyor mu?</h3>
+      <h3>VibeVoice Türkçe dilini ve konuşma seslerini nasıl üretir?</h3>
       <p>
-        VibeVoice çok dilli eğitim verisine sahiptir. ASR (Konuşma Tanıma) modeli 50'den fazla dilde (Türkçe dahil) yüksek doğrulukla çalışır. TTS (Ses Üretimi) modeli ise öncelikli olarak İngilizce ve Çince üzerinde eğitilmiştir; ancak çok dilli token adaptasyonu ile Türkçe metinleri de sentezleyebilmektedir.
+        Uygulama iki seviyeli bir Türkçe ses motoru mimarisine sahiptir:
+        <ol>
+          <li><strong>Tarayıcı İçi Doğal Türkçe Ses Motoru (WebSpeech API + Web Audio):</strong> Herhangi bir harici sunucuya veya GPU'ya ihtiyaç duymadan, sisteminizdeki yerel Türkçe ses motorlarını (Microsoft Ahmet/Emel, Apple Tolga/Yelda veya Google Türkçe) kullanarak çok konuşmacılı podcast'leri anında ve sıfır gecikmeyle seslendirir. Arka plan müziği mikseriyle birleştirir ve transkripti gerçek zamanlı senkronize eder.</li>
+          <li><strong>VibeVoice GPU & Multilingual Model:</strong> VibeVoice, çok dilli token adaptasyonuyla eğitilmiştir. Kendi GPU sunucunuzda çalışan <code>server.py</code> (FastAPI) arka ucu üzerinden stüdyo kalitesinde Türkçe ses sentezi gerçekleştirebilirsiniz.</li>
+        </ol>
       </p>
 
       <h3>GitHub Pages üzerinde canlı model çalıştırabilir miyim?</h3>
