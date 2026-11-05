@@ -1465,8 +1465,8 @@ async function checkGpuHealth(){
       label.innerText = `HTTP ${res.status}`;
     }
   } catch(e){
-    badge.className = "gpu-badge-status status-offline";
-    label.innerText = "Çevrimdışı / Ulaşılamadı";
+    badge.className = "gpu-badge-status status-checking";
+    label.innerText = "Yerel GPU Kapalı (Web Motoru Aktif)";
   }
 }
 
@@ -1565,24 +1565,15 @@ async function startVibeVoiceGeneration(){
     }
 
   } catch(err){
-    console.error("[VibeVoice GPU Hatası]", err);
-    document.getElementById('player-status-badge').innerText = "GPU Bağlantı Hatası";
-    document.getElementById('player-status-badge').style.background = "rgba(239, 68, 68, 0.2)";
-    document.getElementById('player-status-badge').style.color = "#f87171";
+    console.warn("[VibeVoice GPU Bağlantısı]", err);
+    // Pop-up yerine sessiz ve akıcı bir şekilde yerleşik ses motoruna geçiş yap
+    document.getElementById('player-status-badge').innerText = "Yerleşik Motorla Çalınıyor";
+    document.getElementById('player-status-badge').style.background = "rgba(16, 185, 129, 0.2)";
+    document.getElementById('player-status-badge').style.color = "#34d399";
+    document.getElementById('track-title').innerText = "VibeVoice Türkçe Podcast (Canlı Ses)";
 
-    const useFallback = confirm(
-      `⚠️ GPU Sunucusuna Bağlanılamadı!\n\n` +
-      `Uç Nokta: ${endpoint}\n` +
-      `Hata: ${err.message}\n\n` +
-      `Çözüm İpuçları:\n` +
-      `1. GPU sunucunuzda 'python server.py' komutunun çalıştığından emin olun.\n` +
-      `2. Eğer GitHub Pages (HTTPS) üzerinden çalıştırıyorsanız, yerel sunucunuz için ngrok / Cloudflare Tunnel kullanabilirsiniz (örn. https://xyz.ngrok-free.app).\n\n` +
-      `Dahili "🇹🇷 Türkçe Ses Motoru" ile hemen seslendirmek ister misiniz?`
-    );
-
-    if(useFallback){
-      startTurkishSpeech();
-    }
+    // GPU sunucusu çalışmıyorsa kullanıcıyı popup ile rahatsız etmeden hemen Türkçe seslendiriciyi başlat
+    startTurkishSpeech();
   }
 }
 
