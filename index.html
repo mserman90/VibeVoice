@@ -3,493 +3,1446 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<link rel="preload" as="audio" href="assets/audio/2p_see_u_again.mp3">
-<link rel="preload" as="audio" href="assets/audio/2p_argument.mp3">
-<link rel="preload" as="audio" href="assets/audio/3p_gpt5.mp3">
-<link rel="preload" as="audio" href="assets/audio/2p_goat.mp3">
-<link rel="preload" as="audio" href="assets/audio/1p_EN2CH.mp3">
-<link rel="preload" as="audio" href="assets/audio/1p_CH2EN.mp3">
-<link rel="preload" as="audio" href="assets/audio/4p_climate_100min.mp3">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<title>VibeVoice Podcast Stüdyosu - Metinden Çok Konuşmacılı Ses Üretimi</title>
 
-<title>VibeVoice - Yeni Nesil Açık Kaynaklı Ses Yapay Zekası</title>
+<!-- Ön Yüklemeler -->
+<link rel="preload" as="audio" href="assets/audio/3p_gpt5.mp3">
+<link rel="preload" as="audio" href="assets/audio/2p_argument.mp3">
+<link rel="preload" as="audio" href="assets/audio/2p_see_u_again.mp3">
+<link rel="preload" as="audio" href="assets/audio/2p_goat.mp3">
+<link rel="preload" as="audio" href="assets/audio/4p_climate_45min.mp3">
+
+<!-- Fontlar & İkonlar -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
 <style>
   :root {
-    --bg:#ffffff;
-    --card:#ffffff;
-    --muted:#555555;
-    --text:#111827;
-    --border:#e5e7eb;
-    --accent:#2563eb;
-    --accent-hover:#1d4ed8;
-    --badge-bg:#eff6ff;
-    --badge-text:#1d4ed8;
+    --bg: #090d16;
+    --surface: #111827;
+    --surface-card: #162032;
+    --surface-hover: #1f2d45;
+    --border: #24324d;
+    --border-light: #334466;
+    --text: #f8fafc;
+    --text-muted: #94a3b8;
+    --primary: #3b82f6;
+    --primary-hover: #2563eb;
+    --primary-glow: rgba(59, 130, 246, 0.25);
+    --spk-1: #3b82f6;
+    --spk-2: #10b981;
+    --spk-3: #f59e0b;
+    --spk-4: #ec4899;
   }
-  * { box-sizing:border-box; }
-  html, body { margin:0; padding:0; }
+
+  * { box-sizing: border-box; }
   body {
-    color:var(--text);
+    margin: 0;
+    padding: 0;
     background: var(--bg);
-    font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    color: var(--text);
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    min-height: 100vh;
   }
 
   /* Üst Gezinme Çubuğu */
-  .top-nav {
+  .navbar {
+    background: rgba(17, 24, 39, 0.92);
+    backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
-    background: #ffffff;
     position: sticky;
     top: 0;
-    z-index: 50;
-    padding: 12px 20px;
+    z-index: 100;
+    padding: 12px 24px;
   }
-  .top-nav-inner {
-    max-width: 1100px;
+  .nav-container {
+    max-width: 1400px;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
+    gap: 16px;
   }
   .brand {
-    font-weight: 700;
-    font-size: 1.15rem;
-    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 12px;
     text-decoration: none;
+    color: #fff;
+  }
+  .brand-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    box-shadow: 0 0 15px var(--primary-glow);
+  }
+  .brand-name {
+    font-weight: 800;
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+  }
+  .brand-badge {
+    background: rgba(59, 130, 246, 0.18);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    font-size: 0.72rem;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+
+  .nav-tabs {
+    display: flex;
+    background: #0d131f;
+    border: 1px solid var(--border);
+    padding: 4px;
+    border-radius: 10px;
+    gap: 4px;
+  }
+  .tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 8px 16px;
+    border-radius: 7px;
+    font-weight: 600;
+    font-size: 0.88rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+  }
+  .tab-btn:hover { color: #fff; }
+  .tab-btn.active {
+    background: var(--surface-card);
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .btn-sm {
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+  .btn-outline {
+    background: transparent;
+    border-color: var(--border-light);
+    color: var(--text-muted);
+  }
+  .btn-outline:hover {
+    color: #fff;
+    border-color: var(--primary);
+  }
+  .btn-api {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: rgba(16, 185, 129, 0.35);
+    color: #34d399;
+  }
+  .btn-api:hover { background: rgba(16, 185, 129, 0.25); }
+
+  /* Ana Stüdyo Kapsayıcısı */
+  .studio-container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  /* Üst Başlık & İstatistik Çubuğu */
+  .studio-hero {
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+  }
+  .hero-title h1 {
+    margin: 0 0 6px;
+    font-size: 1.85rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #ffffff, #94a3b8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero-title p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+  .hero-badges {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .stat-badge {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #cbd5e1;
+  }
+
+  /* İki Sütunlu Stüdyo Izgarası */
+  .studio-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* Kart Tasarımları */
+  .studio-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #f1f5f9;
+  }
+
+  /* Konuşmacı Çubuğu */
+  .speakers-hub {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .speaker-pill {
+    background: var(--surface-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    user-select: none;
+  }
+  .speaker-pill:hover { border-color: var(--border-light); }
+  .speaker-pill.active {
+    border-color: currentColor;
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .spk-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .spk-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  .spk-name {
+    font-weight: 700;
+    font-size: 0.88rem;
+  }
+  .spk-role {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  /* Şablonlar & Efekt Paleti */
+  .tools-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .template-select {
+    background: var(--surface-card);
+    border: 1px solid var(--border);
+    color: #f1f5f9;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    outline: none;
+    cursor: pointer;
+  }
+  .tag-chips {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .tag-btn {
+    background: var(--surface-card);
+    border: 1px solid var(--border);
+    color: #cbd5e1;
+    font-size: 0.78rem;
+    padding: 4px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tag-btn:hover {
+    background: var(--surface-hover);
+    border-color: var(--primary);
+    color: #fff;
+  }
+
+  /* Senaryo Düzenleyici Metin Alanı */
+  .editor-wrapper {
+    position: relative;
+  }
+  .script-textarea {
+    width: 100%;
+    min-height: 280px;
+    max-height: 500px;
+    background: #0b111d;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    color: #e2e8f0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.92rem;
+    line-height: 1.7;
+    resize: vertical;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+  }
+  .script-textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px var(--primary-glow);
+  }
+  .editor-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 6px;
+    padding: 0 4px;
+  }
+
+  /* Ayarlar / Kontroller */
+  .settings-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin: 18px 0;
+    padding: 16px;
+    background: var(--surface-card);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+  .setting-item label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .setting-item select, .setting-item input[type="range"] {
+    width: 100%;
+    background: #0b111d;
+    border: 1px solid var(--border);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+  }
+
+  /* Büyük Üretim Butonu */
+  .btn-generate {
+    width: 100%;
+    padding: 16px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    border: none;
+    color: #fff;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 4px 20px var(--primary-glow);
+    transition: all 0.2s;
+  }
+  .btn-generate:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 25px rgba(59, 130, 246, 0.4);
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+  }
+  .btn-generate:active { transform: translateY(0); }
+
+  /* Sağ Panel: Çıktı & Canlı Oynatıcı */
+  .player-box {
+    background: #0b111d;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .waveform-canvas {
+    width: 100%;
+    height: 80px;
+    background: #070a12;
+    border-radius: 8px;
+    display: block;
+    margin-bottom: 14px;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .player-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .play-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--primary);
+    border: none;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 0 15px var(--primary-glow);
+  }
+  .play-circle:hover { transform: scale(1.05); }
+
+  .time-display {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  /* Senkronize Transkript Listesi */
+  .transcript-stream {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #0b111d;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .transcript-item {
+    display: grid;
+    grid-template-columns: 60px 100px 1fr;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+    font-size: 0.88rem;
+  }
+  .transcript-item:hover {
+    background: var(--surface-card);
+    border-color: var(--border);
+  }
+  .transcript-item.active {
+    background: rgba(59, 130, 246, 0.12);
+    border-color: var(--primary);
+  }
+  .tr-time {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    align-self: center;
+  }
+  .tr-speaker {
+    font-weight: 700;
+    align-self: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tr-text {
+    color: #e2e8f0;
+    line-height: 1.5;
+  }
+
+  /* İndirme & Dışa Aktarma Butonları */
+  .export-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .btn-export {
+    flex: 1;
+    min-width: 120px;
+    padding: 9px 14px;
+    border-radius: 8px;
+    background: var(--surface-card);
+    border: 1px solid var(--border);
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-export:hover {
+    background: var(--surface-hover);
+    color: #fff;
+    border-color: var(--primary);
+  }
+
+  /* Canlı Sentezleme İlerleme Paneli */
+  .synthesis-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .synthesis-card {
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    padding: 28px;
+    max-width: 520px;
+    width: 100%;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+  }
+  .step-list {
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .step-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 0.92rem;
+  }
+  .step-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    background: #1e293b;
+    color: var(--text-muted);
+  }
+  .step-row.done .step-icon { background: #10b981; color: #fff; }
+  .step-row.active .step-icon { background: var(--primary); color: #fff; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(59,130,246,0.6); } 70% { box-shadow: 0 0 0 10px rgba(59,130,246,0); } 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); } }
+
+  /* Vitrin Bölümü (Showcase) */
+  .showcase-section {
+    display: none;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
+  }
+  .case {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-bottom: 24px;
+  }
+  .case h3 {
+    margin-top: 0;
+    color: #f1f5f9;
+    font-size: 1.1rem;
     display: flex;
     align-items: center;
     gap: 8px;
   }
-  .nav-actions {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .btn-guide {
-    background: var(--accent);
-    color: #fff !important;
-    padding: 7px 15px;
-    border-radius: 6px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    text-decoration: none;
-    transition: background 0.2s;
-  }
-  .btn-guide:hover {
-    background: var(--accent-hover);
-  }
-
-  /* Kapsayıcı */
-  .wrap {
-    max-width:1100px;
-    width:min(92vw,1100px);
-    margin:0 auto;
-    padding:28px 0;
-  }
-
-  section.page { padding: 20px 0; }
-  h1 { margin:0 0 12px; font-size:clamp(26px,3.8vw,38px); text-align:center; color:#0f172a; line-height: 1.25; }
-  h2 { margin:24px 0 12px; font-size:22px; color: #1e293b; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; }
-  h3 { margin:10px 0 8px; font-size:16px; font-weight:600; color:#334155; }
-  .muted { color:var(--muted); line-height: 1.7; font-size: 1.02rem; }
-
-  .links a { text-decoration: none; color: var(--accent); font-weight: 500; font-size: 0.95rem; }
-  .links a:hover { text-decoration: underline; }
-  .links .sep { margin: 0 6px; color: #cbd5e1; }
-
-  /* Bilgilendirme Kutusu */
-  .alert-box {
-    background: #f8fafc;
+  .case audio { width: 100%; margin: 10px 0 12px; }
+  .case .transcript {
+    max-height: 180px;
+    overflow-y: auto;
+    background: #0b111d;
     border: 1px solid var(--border);
-    border-left: 4px solid var(--accent);
-    padding: 14px 18px;
     border-radius: 8px;
-    margin: 20px 0;
-    font-size: 0.92rem;
-    color: #334155;
+    padding: 8px 12px;
+  }
+  .case .line {
+    display: grid;
+    grid-template-columns: 80px 90px 1fr;
+    gap: 10px;
+    padding: 6px 8px;
+    font-size: 0.86rem;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .case .line:hover { background: var(--surface-card); }
+  .case .line.active { background: rgba(59,130,246,0.15); border-color: var(--primary); }
+  .case .ts { color: var(--text-muted); font-family: monospace; }
+  .case .spk { font-weight: 700; color: #60a5fa; }
+  .case .txt { color: #cbd5e1; }
+
+  /* API Ayarları Modalı */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(6px);
+    z-index: 210;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-content {
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    border-radius: 14px;
+    padding: 24px;
+    max-width: 500px;
+    width: 90%;
   }
 
-  .case {
-    margin: 28px 0 32px;
-    background: #fafafa;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px 20px;
-  }
-
-  .sync-block { display:block; }
-  audio { width:100%; display:block; margin:8px 0 12px; }
-
-  /* Transkript kutusu */
-  .transcript {
-    max-height: 22vh;
-    overflow:auto;
-    padding:8px 12px;
-    border:1px solid var(--border);
-    border-radius:8px;
-    background:#fff;
-    scroll-behavior:smooth;
-  }
-
-  .line {
-    display:grid;
-    grid-template-columns:84px 90px 1fr;
-    gap:10px;
-    padding:8px 10px;
-    border-radius:6px;
-    border:1px solid transparent;
-    cursor:pointer;
-    transition: background 0.15s;
-  }
-  .line:hover { background:#f1f5f9; border-color:#e2e8f0; }
-  .line.active { background:rgba(37,99,235,0.08); border-color:#2563eb; }
-
-  .ts, .spk {
-    font-family:ui-monospace,Menlo,Consolas,monospace;
-    color:#475569; font-size:13.5px; align-self:center;
-    white-space:nowrap;
-  }
-  .ts { text-align:right; font-weight: 500; }
-  .spk { text-align:left; font-weight: 600; color: #1e293b; }
-  .txt {
-    white-space:pre-wrap;
-    word-break:break-word;
-    overflow-wrap:anywhere;
-    font-size: 14.5px;
-    color: #334155;
-  }
-
-  .site-footer {
-    margin: 48px 0 0;
-    padding: 24px 0;
-    font-size: 0.88em;
-    color: #64748b;
-    text-align: center;
+  /* Alt Bilgi */
+  footer {
     border-top: 1px solid var(--border);
+    padding: 32px 24px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    margin-top: 60px;
+    background: #090d16;
   }
-  .site-footer a { color: #64748b; text-decoration: none; }
-  .site-footer a:hover { text-decoration: underline; }
-  .site-footer .sep { margin: 0 8px; color: #cbd5e1; }
+  footer a { color: var(--primary); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
 
-  .card, .scroll, .sync-grid { height:auto; min-height:0; }
+  @media (max-width: 1024px) {
+    .studio-grid { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
 
-<!-- Üst Navigasyon -->
-<header class="top-nav">
-  <div class="top-nav-inner">
-    <a href="index.html" class="brand">
-      <i class="fa-solid fa-microphone-lines"></i>
-      <span>VibeVoice Türkçe Vitrini</span>
+<!-- Üst Gezinme Çubuğu -->
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="#" class="brand" onclick="switchTab('studio')">
+      <div class="brand-icon">
+        <i class="fa-solid fa-microphone-lines"></i>
+      </div>
+      <div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="brand-name">VibeVoice Studio</span>
+          <span class="brand-badge">Voice AI</span>
+        </div>
+      </div>
     </a>
+
+    <!-- Sekmeler -->
+    <div class="nav-tabs">
+      <button class="tab-btn active" id="tab-studio" onclick="switchTab('studio')">
+        <i class="fa-solid fa-sliders"></i>
+        <span>Podcast Stüdyosu</span>
+      </button>
+      <button class="tab-btn" id="tab-showcase" onclick="switchTab('showcase')">
+        <i class="fa-solid fa-headphones"></i>
+        <span>Örnek Kayıtlar & Vitrin</span>
+      </button>
+    </div>
+
+    <!-- Hızlı Aksiyonlar -->
     <div class="nav-actions">
-      <a href="kilavuz.html" class="btn-guide">
+      <button class="btn-sm btn-api" onclick="openApiModal()">
+        <i class="fa-solid fa-server"></i>
+        <span id="api-status-text">API: Simülasyon & Demo</span>
+      </button>
+      <a href="kilavuz.html" class="btn-sm btn-outline">
         <i class="fa-solid fa-book-open"></i>
-        <span>Türkçe Kullanım Kılavuzu</span>
+        <span>Kılavuz</span>
       </a>
-      <a href="https://github.com/microsoft/VibeVoice" target="_blank" style="color:#475569; text-decoration:none; font-size:0.9rem;">
-        <i class="fa-brands fa-github"></i> GitHub
-      </a>
-      <a href="https://huggingface.co/collections/microsoft/vibevoice-68a2ef24a875c44be47b034f" target="_blank" style="color:#475569; text-decoration:none; font-size:0.9rem;">
-        <i class="fa-solid fa-robot"></i> Modeller
+      <a href="https://github.com/microsoft/VibeVoice" target="_blank" class="btn-sm btn-outline">
+        <i class="fa-brands fa-github"></i>
+        <span>GitHub</span>
       </a>
     </div>
   </div>
-</header>
+</nav>
 
-<div class="wrap">
+<div class="studio-container">
 
-  <!-- Giriş ve Model Özeti -->
-  <section class="page" id="overview">
-    <header>
-      <h1>VibeVoice: Yeni Nesil Açık Kaynaklı Ses Yapay Zekası</h1>
-      
-      <p class="links" style="text-align:center; margin:10px 0 16px;">
-        <a href="kilavuz.html" style="font-weight:600; color:var(--accent);"><i class="fa-solid fa-book"></i> Türkçe Geliştirici Kılavuzu</a>
-        <span class="sep">·</span>
-        <a href="https://arxiv.org/pdf/2508.19205" target="_blank"><i class="fa-regular fa-file-pdf"></i> Araştırma Raporu (arXiv)</a>
-        <span class="sep">·</span>
-        <a href="https://github.com/microsoft/VibeVoice" target="_blank"><i class="fa-brands fa-github"></i> Kaynak Kod</a>
-        <span class="sep">·</span>
-        <a href="https://huggingface.co/collections/microsoft/vibevoice-68a2ef24a875c44be47b034f" target="_blank"><i class="fa-solid fa-robot"></i> Hugging Face Koleksiyonu</a>
-      </p>
-
-      <p class="muted">
-        <strong>VibeVoice</strong>, metinlerden yüksek kaliteli, uzun soluklu ve çok konuşmacılı podcast/sohbet sesleri üretmek üzere geliştirilmiş yenilikçi bir ses yapay zekası (Voice AI) mimarisidir. Geleneksel metinden sese (TTS) sistemlerinin en büyük kısıtları olan konuşmacı tutarlılığı, ölçeklenebilirlik ve doğal sıra alma (turn-taking) zorluklarını aşar.
-      </p>
-      <p class="muted">
-        Modelin kalbinde, yalnızca <strong>7.5 Hz ultra düşük kare hızında</strong> çalışan sürekli konuşma tokenizer'ları (Akustik ve Semantik) yer alır. Bu sayede hesaplama yükü 10 kata kadar hafifletilirken ses kalitesi korunur. VibeVoice, diyalog akışını kavramak için bir <strong>Büyük Dil Modeli (LLM)</strong> ve akustik detayları üretmek için <strong>Next-Token Difüzyon</strong> mimarisini birleştirir. Tek seferde <strong>90 dakikaya kadar</strong> ve <strong>4 farklı konuşmacıyı</strong> aynı oturumda sentezleyebilir.
-      </p>
-      
-      <div style="display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:30px; margin:24px 0; width:100%;">
-        <div style="flex:1; min-width:300px; text-align:center;">
-          <img src="assets/image/VibeVoice.jpg" alt="VibeVoice Mimari Şeması" style="max-width:100%; height:auto; border-radius:8px; border:1px solid var(--border);">
-          <p style="font-size:0.85em; color:#64748b; margin-top:6px;">Şekil 1: VibeVoice LLM + Next-Token Difüzyon Mimarisi</p>
-        </div>
-        <div style="flex:1; min-width:300px; text-align:center;">
-          <img src="assets/image/MOS-preference.png" alt="MOS Tercih Değerlendirme Sonuçları" style="max-width:85%; height:auto; border-radius:8px; border:1px solid var(--border);">
-          <p style="font-size:0.85em; color:#64748b; margin-top:6px;">Şekil 2: Dinleyici Beğeni (MOS) Karşılaştırma Grafiği</p>
-        </div>
+  <!-- ==================== SEKME 1: PODCAST STÜDYOSU ==================== -->
+  <div id="section-studio">
+    <!-- Hero Başlık -->
+    <div class="studio-hero">
+      <div class="hero-title">
+        <h1>Çok Konuşmacılı Podcast Üretim Stüdyosu</h1>
+        <p>Microsoft VibeVoice 7.5 Hz difüzyon mimarisiyle metinden uzun süreli, akıcı ve doğal diyaloglar sentezleyin.</p>
       </div>
-
-      <div class="alert-box">
-        <strong><i class="fa-solid fa-shield-halved"></i> Sorumlu Yapay Zeka Bildirimi:</strong>
-        VibeVoice, ses sentezi araştırma topluluğunda açık iş birliğini ilerletmek amacıyla geliştirilmiştir. Sorumlu yapay zeka ilkeleri gereği modelin kötüye kullanımını engelleyici güvenlik tedbirleri ve filtre mekanizmaları sürekli güncellenmektedir.
-      </div>
-    </header>
-  </section>
-
-  <!-- Bölüm 1: Bağlama Duyarlı İfade -->
-  <section class="page" id="demo4">
-    <h2>1. Bağlama Duyarlı İfade ve Duygu Geçişleri (Context-Aware Expression)</h2>
-    <p class="muted">Model, metnin içeriğindeki duygu durumunu ve konuşma hızını otomatik olarak algılar ve doğal insan tepkileri verir.</p>
-
-    <div class="case" data-key="demo4-a" data-json="assets/text/2p_argument_gt_timestamp.json">
-      <h3><i class="fa-solid fa-bolt" style="color:#eab308;"></i> Doğal Duygu ve Tartışma Vurgusu (Spontaneous Emotion - 2 Konuşmacı)</h3>
-      <div class="sync-block">
-        <audio id="audio-demo4-a" controls preload="metadata">
-          <source src="assets/audio/2p_argument.mp3" type="audio/mpeg">
-        </audio>
-        <div class="transcript" id="trans-demo4-a"></div>
+      <div class="hero-badges">
+        <div class="stat-badge"><i class="fa-solid fa-bolt" style="color:#eab308;"></i> 7.5 Hz Tokenizer</div>
+        <div class="stat-badge"><i class="fa-solid fa-users" style="color:#10b981;"></i> 4 Konuşmacı Desteği</div>
+        <div class="stat-badge"><i class="fa-solid fa-clock" style="color:#3b82f6;"></i> 90 Dk Kesintisiz Ses</div>
       </div>
     </div>
 
-    <div class="case" data-key="demo4-b" data-json="assets/text/2p_see_u_again_gt_timestamp.json">
-      <h3><i class="fa-solid fa-music" style="color:#ec4899;"></i> Doğal Şarkı Söyleme Yeteneği (Spontaneous Singing - "See You Again")</h3>
-      <div class="sync-block">
-        <audio id="audio-demo4-b" controls preload="metadata">
-          <source src="assets/audio/2p_see_u_again.mp3" type="audio/mpeg">
-        </audio>
-        <div class="transcript" id="trans-demo4-b"></div>
+    <div class="studio-grid">
+      <!-- SOL PANEL: Editör ve Yapılandırma -->
+      <div class="studio-card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fa-solid fa-users-gear" style="color:var(--primary);"></i>
+            <span>Konuşmacı Kadrosu</span>
+          </div>
+          <span style="font-size:0.8rem; color:var(--text-muted);">Metinde [İsim]: yazarak konuşmacı belirleyin</span>
+        </div>
+
+        <!-- Konuşmacı Kartları (4 Konuşmacı) -->
+        <div class="speakers-hub">
+          <div class="speaker-pill active" style="color:var(--spk-1);" onclick="insertSpeaker('[Mert]: ')">
+            <div class="spk-header">
+              <span class="spk-dot" style="background:var(--spk-1);"></span>
+              <span class="spk-name">Mert</span>
+            </div>
+            <div class="spk-role">Sunucu (Tok & Meraklı)</div>
+          </div>
+          <div class="speaker-pill" style="color:var(--spk-2);" onclick="insertSpeaker('[Selin]: ')">
+            <div class="spk-header">
+              <span class="spk-dot" style="background:var(--spk-2);"></span>
+              <span class="spk-name">Selin</span>
+            </div>
+            <div class="spk-role">Uzman (Analitik & Dinamik)</div>
+          </div>
+          <div class="speaker-pill" style="color:var(--spk-3);" onclick="insertSpeaker('[Can]: ')">
+            <div class="spk-header">
+              <span class="spk-dot" style="background:var(--spk-3);"></span>
+              <span class="spk-name">Can</span>
+            </div>
+            <div class="spk-role">Konuk (Samimi & Spontane)</div>
+          </div>
+          <div class="speaker-pill" style="color:var(--spk-4);" onclick="insertSpeaker('[Deniz]: ')">
+            <div class="spk-header">
+              <span class="spk-dot" style="background:var(--spk-4);"></span>
+              <span class="spk-name">Deniz</span>
+            </div>
+            <div class="spk-role">Moderatör (Dengeli)</div>
+          </div>
+        </div>
+
+        <!-- Araç Çubuğu: Şablonlar ve Duygu Etiketleri -->
+        <div class="tools-bar">
+          <select class="template-select" onchange="loadTemplate(this.value)">
+            <option value="">⚡ Hazır Senaryo Şablonu Seçin...</option>
+            <option value="ai-tech">🎙️ Yapay Zeka ve GPT-5 Sohbeti (3 Konuşmacı)</option>
+            <option value="climate-debate">🌍 Küresel İklim ve Teknoloji Tartışması (4 Konuşmacı)</option>
+            <option value="spontaneous-singing">🎵 Spontane Şarkı Söyleme & Mizah (2 Konuşmacı)</option>
+            <option value="cross-lingual">🌐 Diller Arası Geçiş ve Vurgu (2 Konuşmacı)</option>
+          </select>
+
+          <!-- Duygu Etiketleri -->
+          <div class="tag-chips">
+            <button class="tag-btn" onclick="insertTag('[gülerek]')">😄 [gülerek]</button>
+            <button class="tag-btn" onclick="insertTag('[şaşkınlıkla]')">😲 [şaşkınlıkla]</button>
+            <button class="tag-btn" onclick="insertTag('[düşünceli]')">🤔 [düşünceli]</button>
+            <button class="tag-btn" onclick="insertTag('[araya girerek]')">⚡ [araya girerek]</button>
+            <button class="tag-btn" onclick="insertTag('[fısıltıyla]')">🤫 [fısıltıyla]</button>
+          </div>
+        </div>
+
+        <!-- Senaryo Editörü Metin Alanı -->
+        <div class="editor-wrapper">
+          <textarea id="script-input" class="script-textarea" placeholder="[Mert]: Herkese merhaba! Bugünkü teknoloji yayınımıza hoş geldiniz.
+[Selin]: Merhaba Mert, bugün yapay zekanın yeni nesil ses modellerini konuşacağız!
+[Mert]: [gülerek] Evet, özellikle kesintisiz 90 dakika konuşabilen modeller gerçekten heyecan verici..."></textarea>
+          <div class="editor-meta">
+            <span id="char-count">0 karakter</span>
+            <span id="estimated-time">Tahmini Süre: ~0 dk 00 sn</span>
+          </div>
+        </div>
+
+        <!-- Ayarlar -->
+        <div class="settings-row">
+          <div class="setting-item">
+            <label><i class="fa-solid fa-music"></i> Arka Plan Müziği</label>
+            <select id="bg-music">
+              <option value="none">Müziksiz (Sadece Ses)</option>
+              <option value="lofi" selected>Lo-Fi Rahatlatıcı Podcast Ritim</option>
+              <option value="tech">Teknoloji & Siber Ambiyans</option>
+              <option value="acoustic">Akustik Kahve Dükkanı</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <label><i class="fa-solid fa-brain"></i> Model Boyutu</label>
+            <select id="model-variant">
+              <option value="1.5B" selected>VibeVoice-1.5B (Podcast Yüksek Kalite)</option>
+              <option value="0.5B">VibeVoice-Realtime-0.5B (Hızlı Akış)</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <label><i class="fa-solid fa-temperature-half"></i> Duygu Sıcaklığı (Temp: <span id="temp-val">0.7</span>)</label>
+            <input type="range" id="temp-slider" min="0.3" max="1.0" step="0.05" value="0.7" oninput="document.getElementById('temp-val').innerText = this.value">
+          </div>
+        </div>
+
+        <!-- Üretim Butonu -->
+        <button class="btn-generate" onclick="startGeneration()">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <span>VibeVoice ile Podcast'i Sentezle</span>
+        </button>
+      </div>
+
+      <!-- SAĞ PANEL: Çıktı & İnteraktif Oynatıcı -->
+      <div class="studio-card">
+        <div class="card-header">
+          <div class="card-title">
+            <i class="fa-solid fa-play-circle" style="color:var(--primary);"></i>
+            <span>Stüdyo Çıktısı & Canlı Oynatıcı</span>
+          </div>
+          <span class="brand-badge" id="player-status-badge">Hazır</span>
+        </div>
+
+        <!-- Oynatıcı Kutusu -->
+        <div class="player-box">
+          <canvas id="waveform-canvas" class="waveform-canvas"></canvas>
+
+          <div class="player-controls">
+            <button class="play-circle" id="master-play-btn" onclick="togglePlay()">
+              <i class="fa-solid fa-play" id="play-icon"></i>
+            </button>
+            <div style="flex:1;">
+              <div style="font-weight:700; font-size:0.95rem; margin-bottom:2px;" id="track-title">VibeVoice Podcast Oturumu</div>
+              <div class="time-display">
+                <span id="current-time">00:00</span> / <span id="total-time">02:45</span>
+              </div>
+            </div>
+            <select id="playback-speed" class="template-select" style="padding:4px 8px; font-size:0.8rem;" onchange="changeSpeed(this.value)">
+              <option value="1">1.0x</option>
+              <option value="1.25">1.25x</option>
+              <option value="1.5">1.5x</option>
+            </select>
+          </div>
+
+          <audio id="main-audio" preload="metadata" style="display:none;"></audio>
+        </div>
+
+        <!-- Senkronize Transkript Akışı -->
+        <div class="card-title" style="font-size:0.9rem; margin-bottom:10px;">
+          <i class="fa-solid fa-align-left" style="color:var(--text-muted);"></i>
+          <span>Senkronize Transkript (Oynatılan satır otomatik parlar)</span>
+        </div>
+        <div class="transcript-stream" id="transcript-stream">
+          <div style="text-align:center; padding:40px 20px; color:var(--text-muted);">
+            <i class="fa-solid fa-microphone" style="font-size:2rem; margin-bottom:10px; display:block; opacity:0.3;"></i>
+            Bir şablon seçin veya kendi senaryonuzu yazıp <strong>Sentezle</strong> butonuna tıklayın.
+          </div>
+        </div>
+
+        <!-- Dışa Aktarma Butonları -->
+        <div class="export-actions">
+          <button class="btn-export" onclick="downloadAudio()">
+            <i class="fa-solid fa-download"></i> Ses İndir (.mp3)
+          </button>
+          <button class="btn-export" onclick="downloadTranscript()">
+            <i class="fa-solid fa-file-lines"></i> Transkript (.txt)
+          </button>
+          <button class="btn-export" onclick="downloadSrt()">
+            <i class="fa-solid fa-closed-captioning"></i> Altyazı (.srt)
+          </button>
+        </div>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- Bölüm 2: Arka Plan Müzikli Podcast -->
-  <section class="page" id="demo1">
-    <h2>2. Arka Plan Müzikli Podcast ve Sohbet (Podcast with Background Music)</h2>
-    <p class="muted">Konuşmacılar birbirlerinin sözünü kesmeden, doğal duraklamalar ve arka plan müziğiyle stüdyo kalitesinde diyalog kurar.</p>
+  <!-- ==================== SEKME 2: VİTRİN & ÖRNEKLER ==================== -->
+  <div id="section-showcase" class="showcase-section">
+    <div class="studio-hero">
+      <div class="hero-title">
+        <h1>VibeVoice Orijinal Araştırma Demoları</h1>
+        <p>Microsoft Research tarafından eğitilmiş modellerin çok konuşmacılı, diller arası ve uzun formatlı örnek kayıtları.</p>
+      </div>
+    </div>
 
+    <!-- Örnek 1: Müzikli Podcast (3 Konuşmacı) -->
     <div class="case" data-key="demo1-a" data-json="assets/text/3p_gpt5_gt_timestamp.json">
-      <h3><i class="fa-solid fa-users" style="color:var(--accent);"></i> Örnek 1: Yapay Zeka Tartışması (3 Farklı Konuşmacı)</h3>
-      <div class="sync-block">
-        <audio id="audio-demo1-a" controls preload="metadata">
-          <source src="assets/audio/3p_gpt5.mp3" type="audio/mpeg">
-        </audio>
-        <div class="transcript" id="trans-demo1-a"></div>
-      </div>
+      <h3><i class="fa-solid fa-users" style="color:var(--primary);"></i> Arka Plan Müzikli Podcast - Yapay Zeka ve GPT-5 Sohbeti (3 Konuşmacı)</h3>
+      <audio id="audio-demo1-a" controls preload="metadata">
+        <source src="assets/audio/3p_gpt5.mp3" type="audio/mpeg">
+      </audio>
+      <div class="transcript" id="trans-demo1-a"></div>
     </div>
 
-    <div class="case" data-key="demo1-b" data-json="assets/text/2p_goat_gt_timestamp.json">
-      <h3><i class="fa-solid fa-comments" style="color:var(--accent);"></i> Örnek 2: Spor ve Kültür Sohbeti (2 Konuşmacı)</h3>
-      <div class="sync-block">
-        <audio id="audio-demo1-b" controls preload="metadata">
-          <source src="assets/audio/2p_goat.mp3" type="audio/mpeg">
-        </audio>
-        <div class="transcript" id="trans-demo1-b"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Bölüm 3: Diller Arası -->
-  <section class="page" id="demo3">
-    <h2>3. Diller Arası Ses Sentezi ve Vurgu (Cross-Lingual)</h2>
-    <p class="muted">Aynı konuşmacının ses karakteri ve tınısı korunarak farklı dillere doğal geçiş sağlanır.</p>
-
-    <div class="case" data-key="demo3-a" data-json="assets/text/1p_CH2EN_gt_timestamp.json">
-      <h3><i class="fa-solid fa-language" style="color:#10b981;"></i> Mandarin Çincesinden İngilizceye (Mandarin to English)</h3>
-      <div class="sync-block">
-        <audio id="audio-demo3-a" controls preload="metadata">
-          <source src="assets/audio/1p_CH2EN.mp3" type="audio/mpeg">
-        </audio>
-        <div class="transcript" id="trans-demo3-a"></div>
-      </div>
+    <!-- Örnek 2: Doğal Şarkı Söyleme -->
+    <div class="case" data-key="demo4-b" data-json="assets/text/2p_see_u_again_gt_timestamp.json">
+      <h3><i class="fa-solid fa-music" style="color:#ec4899;"></i> Spontane Şarkı Söyleme Yeteneği (See You Again)</h3>
+      <audio id="audio-demo4-b" controls preload="metadata">
+        <source src="assets/audio/2p_see_u_again.mp3" type="audio/mpeg">
+      </audio>
+      <div class="transcript" id="trans-demo4-b"></div>
     </div>
 
-    <div class="case" data-key="demo3-b" data-json="assets/text/1p_EN2CH_gt_timestamp.json">
-      <h3><i class="fa-solid fa-language" style="color:#10b981;"></i> İngilizceden Mandarin Çincesine (English to Mandarin)</h3>
-      <div class="sync-block">
-        <audio id="audio-demo3-b" controls preload="metadata">
-          <source src="assets/audio/1p_EN2CH.mp3" type="audio/mpeg">
-        </audio>
-        <div class="transcript" id="trans-demo3-b"></div>
-      </div>
+    <!-- Örnek 3: Doğal Tartışma ve Vurgu -->
+    <div class="case" data-key="demo4-a" data-json="assets/text/2p_argument_gt_timestamp.json">
+      <h3><i class="fa-solid fa-bolt" style="color:#eab308;"></i> Doğal Duygu & Tartışma Tonlaması (2 Konuşmacı)</h3>
+      <audio id="audio-demo4-a" controls preload="metadata">
+        <source src="assets/audio/2p_argument.mp3" type="audio/mpeg">
+      </audio>
+      <div class="transcript" id="trans-demo4-a"></div>
     </div>
-  </section>
 
-  <!-- Bölüm 4: Uzun Süreli Diyaloglar -->
-  <section class="page" id="demo2">
-    <h2>4. Uzun Süreli Çok Konuşmacılı Diyaloglar (Long Conversational Speech)</h2>
-    <p class="muted">VibeVoice, konuşmacı kimliklerini kaybetmeden 45 ve 100 dakika süren panelleri tek oturumda üretebilmektedir.</p>
-
+    <!-- Örnek 4: Uzun Formatlı Diyalog (4 Konuşmacı 45 Dk) -->
     <div class="case" data-key="demo2-a" data-json="assets/text/4p_climate_45min_gt_timestamp.json">
-      <h3><i class="fa-solid fa-clock" style="color:#8b5cf6;"></i> İklim Değişikliği Paneli (4 Konuşmacı - 45 Dakika)</h3>
-      <div class="sync-block">
-        <audio id="audio-demo2-a" controls preload="metadata">
-          <source src="assets/audio/4p_climate_45min.mp3" type="audio/mpeg">
-        </audio>
-        <div class="transcript" id="trans-demo2-a"></div>
-      </div>
+      <h3><i class="fa-solid fa-clock" style="color:#10b981;"></i> Uzun Formatlı Panel - İklim Değişikliği (4 Konuşmacı - 45 Dakika)</h3>
+      <audio id="audio-demo2-a" controls preload="metadata">
+        <source src="assets/audio/4p_climate_45min.mp3" type="audio/mpeg">
+      </audio>
+      <div class="transcript" id="trans-demo2-a"></div>
     </div>
-
-    <div class="case" data-key="demo2-b" data-json="assets/text/4p_climate_100min_gt_timestamp.json">
-      <h3><i class="fa-solid fa-clock-rotate-left" style="color:#8b5cf6;"></i> İklim Değişikliği Paneli (4 Konuşmacı - 100 Dakika)</h3>
-      <div class="sync-block">
-        <audio id="audio-demo2-b" controls preload="metadata">
-          <source src="assets/audio/4p_climate_100min.mp3" type="audio/mpeg">
-        </audio>
-        <div class="transcript" id="trans-demo2-b"></div>
-      </div>
-      <p style="font-size:0.85em; color:#888; margin:8px 0 0;">* Zaman damgaları üretilen ses üzerinden otomatik çıkarılmıştır ve küçük senkronizasyon sapmaları içerebilir.</p>
-    </div>
-  </section>
+  </div>
 
 </div>
 
+<!-- Sentezleme İlerleme Modalı -->
+<div class="synthesis-modal-overlay" id="synthesis-modal">
+  <div class="synthesis-card">
+    <div style="text-align:center; margin-bottom:18px;">
+      <i class="fa-solid fa-brain" style="font-size:2.4rem; color:var(--primary); margin-bottom:10px;"></i>
+      <h3 style="margin:0; font-size:1.25rem;">VibeVoice Podcast Sentezleniyor</h3>
+      <p style="margin:4px 0 0; color:var(--text-muted); font-size:0.88rem;">Ultra düşük 7.5 Hz kare hızlı difüzyon modeli işleniyor...</p>
+    </div>
+
+    <div class="step-list">
+      <div class="step-row done" id="step-1">
+        <div class="step-icon"><i class="fa-solid fa-check"></i></div>
+        <div>
+          <div style="font-weight:600;">Metin & Konuşmacı Ayrıştırma</div>
+          <div style="font-size:0.78rem; color:var(--text-muted);">Çok konuşmacılı diyalog sıraları belirlendi</div>
+        </div>
+      </div>
+      <div class="step-row active" id="step-2">
+        <div class="step-icon"><i class="fa-solid fa-gear fa-spin"></i></div>
+        <div>
+          <div style="font-weight:600;">7.5 Hz Akustik & Semantik Tokenizasyon</div>
+          <div style="font-size:0.78rem; color:var(--text-muted);">LLM omurgasında diyalog bağlamı çözümleniyor</div>
+        </div>
+      </div>
+      <div class="step-row" id="step-3">
+        <div class="step-icon"><i class="fa-solid fa-wave-square"></i></div>
+        <div>
+          <div style="font-weight:600;">Next-Token Difüzyon (Diffusion Head)</div>
+          <div style="font-size:0.78rem; color:var(--text-muted);">Doğal tınılar ve ses dalgası detayları oluşturuluyor</div>
+        </div>
+      </div>
+      <div class="step-row" id="step-4">
+        <div class="step-icon"><i class="fa-solid fa-sliders"></i></div>
+        <div>
+          <div style="font-weight:600;">Mastering & Arka Plan Miksajı</div>
+          <div style="font-size:0.78rem; color:var(--text-muted);">Zaman damgaları ve stüdyo miksajı tamamlanıyor</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- API Yapılandırma Modalı -->
+<div class="modal-overlay" id="api-modal">
+  <div class="modal-content">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+      <h3 style="margin:0; font-size:1.15rem; color:#fff;"><i class="fa-solid fa-server" style="color:#10b981;"></i> VibeVoice API Ayarları</h3>
+      <button onclick="closeApiModal()" style="background:none; border:none; color:var(--text-muted); font-size:1.2rem; cursor:pointer;">&times;</button>
+    </div>
+    <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:16px;">
+      Kendi GPU sunucunuzda çalışan VibeVoice FastAPI arka ucunu (<code>server.py</code>) veya Hugging Face Spaces API'nizi buraya bağlayabilirsiniz.
+    </p>
+
+    <div style="margin-bottom:14px;">
+      <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:6px; color:#cbd5e1;">API Uç Noktası (Endpoint URL)</label>
+      <input type="text" id="api-url-input" value="http://localhost:8000" placeholder="http://localhost:8000 veya https://..." style="width:100%; padding:9px 12px; background:#0b111d; border:1px solid var(--border); border-radius:8px; color:#fff; font-family:monospace; font-size:0.88rem;">
+    </div>
+
+    <div style="margin-bottom:18px;">
+      <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:6px; color:#cbd5e1;">API Yetkilendirme / Token (İsteğe Bağlı)</label>
+      <input type="password" id="api-token-input" placeholder="Bearer Token / HF Token" style="width:100%; padding:9px 12px; background:#0b111d; border:1px solid var(--border); border-radius:8px; color:#fff; font-family:monospace; font-size:0.88rem;">
+    </div>
+
+    <div style="display:flex; gap:10px;">
+      <button class="btn-sm btn-api" style="flex:1; justify-content:center; padding:10px;" onclick="testAndSaveApi()">
+        <i class="fa-solid fa-plug"></i> Bağlantıyı Sına ve Kaydet
+      </button>
+      <button class="btn-sm btn-outline" onclick="closeApiModal()">Kapat</button>
+    </div>
+  </div>
+</div>
+
 <!-- Alt Bilgi (Footer) -->
-<footer class="site-footer">
-  <div style="margin-bottom: 8px;">
-    <a href="kilavuz.html" style="font-weight:600; color:var(--accent);">📘 Türkçe Kullanım Kılavuzunu Oku</a>
-    <span class="sep">|</span>
-    <a href="https://github.com/microsoft/VibeVoice" target="_blank">Orijinal Microsoft VibeVoice Deposu</a>
-    <span class="sep">|</span>
-    <a href="https://huggingface.co/collections/microsoft/vibevoice-68a2ef24a875c44be47b034f" target="_blank">Hugging Face Modelleri</a>
+<footer>
+  <div style="margin-bottom:10px;">
+    <a href="#" onclick="switchTab('studio')">Podcast Stüdyosu</a>
+    <span style="margin:0 8px; opacity:0.3;">·</span>
+    <a href="#" onclick="switchTab('showcase')">Hazır Ses Vitrini</a>
+    <span style="margin:0 8px; opacity:0.3;">·</span>
+    <a href="kilavuz.html">Türkçe Kullanım Kılavuzu</a>
+    <span style="margin:0 8px; opacity:0.3;">·</span>
+    <a href="https://github.com/microsoft/VibeVoice" target="_blank">Resmi Microsoft VibeVoice Deposu</a>
   </div>
-  <div>
-    <span>&copy; 2026 VibeVoice Türkçe Vitrini · Açık Kaynak Topluluk Projesi</span>
-  </div>
+  <div>&copy; 2026 VibeVoice Podcast Studio · Açık Kaynaklı Ses Yapay Zekası Arayüzü</div>
 </footer>
 
 <script>
-/* ---- Karşılıklı Dışlayıcı Oynatma: Biri çalarken diğeri durur ---- */
-const allAudios = Array.from(document.querySelectorAll('audio'));
-allAudios.forEach(p => p.addEventListener('play', () => {
-  allAudios.forEach(o => { if (o !== p) o.pause(); });
-}));
+/* ==================== SENARYO ŞABLONLARI ==================== */
+const TEMPLATES = {
+  "ai-tech": `[Mert]: Herkese selamlar, Podcast Stüdyomuza hoş geldiniz! Bugün yapay zekanın ses sentezindeki yeni devrimini konuşacağız.
+[Selin]: Selam Mert! Evet, özellikle Microsoft'un VibeVoice modeliyle birlikte artık robotik ses devri tamamen kapandı.
+[Can]: [gülerek] Kesinlikle! Eskiden cümle aralarında garip nefes sesleri ya da tekdüze bir tonlama olurdu.
+[Mert]: [şaşkınlıkla] Şuna baksanıza, 90 dakikayı tek seferde hiç konuşmacı kimliğini bozmadan üretebiliyor!
+[Selin]: Bunun sırrı 7.5 Hz çalışan akustik tokenizer mimarisi. Hem hesaplama yükünü onda bire düşürüyor hem de gerçekçiliği koruyor.
+[Can]: [düşünceli] Gelecekte bütün sesli kitaplar ve podcast'ler böyle üretilecek gibi görünüyor.`,
 
-/* ---- Zaman Dönüştürücü (Dakika:Saniye.Milisaniye) ---- */
+  "climate-debate": `[Deniz]: Değerli dinleyicilerimiz, bu haftaki panelimizde yenilenebilir enerji dönüşümünü ele alıyoruz.
+[Mert]: Deniz Bey'e katılıyorum, özellikle güneş ve rüzgar enerjisindeki depolama kapasiteleri bu yıl rekor kırdı.
+[Selin]: Fakat şebeke altyapısının bu hıza ayak uydurması gerekiyor, aksi takdirde enerji iletim kayıpları yaşanabilir.
+[Can]: [araya girerek] Yatırımların sadece büyük tesislere değil, yerel mikro şebekelere de kayması şart.
+[Deniz]: Çok doğru bir tespit Can Bey. Şimdi ikinci bölümde hidrojen enerjisinin rolüne bakalım.`,
+
+  "spontaneous-singing": `[Mert]: Can, geçen haftaki yayında bir şarkı mırıldanıyordun, o neydi öyle?
+[Can]: [gülerek] Hatırlatma ya, 'See You Again' şarkısı dilime dolanmıştı birden!
+[Selin]: Neden tekrar söylemiyorsun, dinleyicilerimiz canlı performans bekliyor!
+[Can]: [şarkı söyler gibi] It's been a long day without you, my friend... And I'll tell you all about it when I see you again!
+[Mert]: [şaşkınlıkla] İnanılmaz bir doğallık, tebrikler dostum!`,
+
+  "cross-lingual": `[Mert]: VibeVoice modelinin en etkileyici yanlarından biri de diller arası akıcılığı.
+[Selin]: Evet, aynı konuşmacının ses karakteri bozulmadan İngilizceden Mandarin Çincesine veya Türkçeye geçiş yapılabiliyor.
+[Mert]: Bu sayede küresel yayıncılar içeriklerini anında yerelleştirebiliyor.`
+};
+
+/* ==================== DURUM DEĞİŞKENLERİ ==================== */
+let currentAudio = document.getElementById('main-audio');
+let currentTranscriptData = [];
+let isPlaying = false;
+let audioContext, analyser, canvasCtx, animId;
+let apiEndpoint = localStorage.getItem('vibevoice_api_url') || '';
+
+/* ==================== SAYFA VE SEKME YÖNETİMİ ==================== */
+function switchTab(tab){
+  document.getElementById('section-studio').style.display = tab === 'studio' ? 'block' : 'none';
+  document.getElementById('section-showcase').style.display = tab === 'showcase' ? 'block' : 'none';
+  document.getElementById('tab-studio').classList.toggle('active', tab === 'studio');
+  document.getElementById('tab-showcase').classList.toggle('active', tab === 'showcase');
+  if(tab === 'showcase') initCases();
+}
+
+function insertSpeaker(spk){
+  const el = document.getElementById('script-input');
+  el.focus();
+  const start = el.selectionStart;
+  const val = el.value;
+  el.value = val.substring(0, start) + "\n" + spk + val.substring(el.selectionEnd);
+  el.selectionStart = el.selectionEnd = start + spk.length + 1;
+  updateMeta();
+}
+
+function insertTag(tag){
+  const el = document.getElementById('script-input');
+  el.focus();
+  const start = el.selectionStart;
+  const val = el.value;
+  el.value = val.substring(0, start) + " " + tag + " " + val.substring(el.selectionEnd);
+  updateMeta();
+}
+
+function loadTemplate(key){
+  if(!key || !TEMPLATES[key]) return;
+  document.getElementById('script-input').value = TEMPLATES[key];
+  updateMeta();
+}
+
+function updateMeta(){
+  const val = document.getElementById('script-input').value;
+  document.getElementById('char-count').innerText = `${val.length} karakter`;
+  const words = val.trim().split(/\s+/).filter(Boolean).length;
+  // Yaklaşık dakikada 140 kelime konuşma hızı
+  const sec = Math.max(5, Math.round((words / 140) * 60));
+  const m = Math.floor(sec / 60), s = sec % 60;
+  document.getElementById('estimated-time').innerText = `Tahmini Süre: ~${m} dk ${s < 10 ? '0' : ''}${s} sn`;
+}
+document.getElementById('script-input').addEventListener('input', updateMeta);
+
+/* ==================== SENTEZLEME İŞLEMİ ==================== */
+function startGeneration(){
+  const script = document.getElementById('script-input').value.trim();
+  if(!script){
+    alert("Lütfen önce bir podcast senaryosu yazın veya yukarıdaki hazır şablonlardan birini seçin.");
+    return;
+  }
+
+  // Modalı göster
+  const modal = document.getElementById('synthesis-modal');
+  modal.style.display = 'flex';
+  
+  // Adımları sırayla anime et
+  setStep(1, 'active');
+  setTimeout(() => {
+    setStep(1, 'done'); setStep(2, 'active');
+  }, 700);
+
+  setTimeout(() => {
+    setStep(2, 'done'); setStep(3, 'active');
+  }, 1500);
+
+  setTimeout(() => {
+    setStep(3, 'done'); setStep(4, 'active');
+  }, 2300);
+
+  setTimeout(() => {
+    setStep(4, 'done');
+    setTimeout(() => {
+      modal.style.display = 'none';
+      finishGeneration(script);
+    }, 500);
+  }, 3100);
+}
+
+function setStep(num, status){
+  const el = document.getElementById(`step-${num}`);
+  if(!el) return;
+  el.className = `step-row ${status}`;
+  const icon = el.querySelector('.step-icon i');
+  if(status === 'done') icon.className = "fa-solid fa-check";
+  else if(status === 'active') icon.className = "fa-solid fa-gear fa-spin";
+}
+
+function finishGeneration(script){
+  document.getElementById('player-status-badge').innerText = "Oturum Hazır (Canlı)";
+  document.getElementById('player-status-badge').style.background = "rgba(16, 185, 129, 0.2)";
+  document.getElementById('player-status-badge').style.color = "#34d399";
+
+  // Senaryoyu satırlara ayır ve transkript verisini oluştur
+  const lines = script.split("\n").filter(l => l.trim().length > 0);
+  currentTranscriptData = [];
+  let currentTime = 0;
+
+  lines.forEach((line, idx) => {
+    let speaker = "Konuşmacı";
+    let text = line;
+    const match = line.match(/^\[(.*?)\]:\s*(.*)/);
+    if(match){
+      speaker = match[1];
+      text = match[2];
+    }
+    const duration = Math.max(2.5, (text.split(" ").length * 0.42));
+    currentTranscriptData.push({
+      start: currentTime,
+      end: currentTime + duration,
+      speaker: speaker,
+      text: text
+    });
+    currentTime += duration;
+  });
+
+  // Transkript UI'sini oluştur
+  renderTranscriptStream();
+
+  // Uygun VibeVoice ses kaynağını bağla
+  // Çok konuşmacılı müzikli örnek podcast audio dosyasını kullan
+  currentAudio.src = "assets/audio/3p_gpt5.mp3";
+  currentAudio.load();
+  currentAudio.play();
+  isPlaying = true;
+  updatePlayButton(true);
+  initWaveformVisualizer();
+}
+
+/* ==================== SENKRONİZE TRANSKRİPT AKIŞI ==================== */
+function renderTranscriptStream(){
+  const container = document.getElementById('transcript-stream');
+  container.innerHTML = '';
+  
+  currentTranscriptData.forEach((item, idx) => {
+    const row = document.createElement('div');
+    row.className = 'transcript-item';
+    row.dataset.idx = idx;
+
+    let spkColor = "#3b82f6";
+    if(item.speaker.includes("Selin") || item.speaker.includes("2")) spkColor = "#10b981";
+    if(item.speaker.includes("Can") || item.speaker.includes("3")) spkColor = "#f59e0b";
+    if(item.speaker.includes("Deniz") || item.speaker.includes("4")) spkColor = "#ec4899";
+
+    const m = Math.floor(item.start / 60), s = Math.floor(item.start % 60);
+    const tsStr = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+
+    row.innerHTML = `
+      <div class="tr-time">${tsStr}</div>
+      <div class="tr-speaker" style="color:${spkColor};">${escHtml(item.speaker)}</div>
+      <div class="tr-text">${escHtml(item.text)}</div>
+    `;
+
+    row.onclick = () => {
+      currentAudio.currentTime = item.start;
+      if(!isPlaying) togglePlay();
+    };
+    container.appendChild(row);
+  });
+}
+
+function escHtml(s){
+  return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ==================== OYNATICI VE WAVEFORM ==================== */
+function togglePlay(){
+  if(!currentAudio.src){
+    // Henüz üretim yapılmadıysa otomatik hazırla
+    startGeneration();
+    return;
+  }
+  if(currentAudio.paused){
+    currentAudio.play();
+    isPlaying = true;
+    updatePlayButton(true);
+  } else {
+    currentAudio.pause();
+    isPlaying = false;
+    updatePlayButton(false);
+  }
+}
+
+function updatePlayButton(playing){
+  const icon = document.getElementById('play-icon');
+  icon.className = playing ? "fa-solid fa-pause" : "fa-solid fa-play";
+}
+
+function changeSpeed(val){
+  currentAudio.playbackRate = parseFloat(val);
+}
+
+currentAudio.addEventListener('timeupdate', () => {
+  const cur = currentAudio.currentTime;
+  const dur = currentAudio.duration || 0;
+  
+  // Zaman göstergesi
+  const cm = Math.floor(cur / 60), cs = Math.floor(cur % 60);
+  const dm = Math.floor(dur / 60), ds = Math.floor(dur % 60);
+  document.getElementById('current-time').innerText = `${cm < 10 ? '0' : ''}${cm}:${cs < 10 ? '0' : ''}${cs}`;
+  if(dur > 0){
+    document.getElementById('total-time').innerText = `${dm < 10 ? '0' : ''}${dm}:${ds < 10 ? '0' : ''}${ds}`;
+  }
+
+  // Senkronize Transkript Vurgusu
+  const activeIdx = currentTranscriptData.findIndex(seg => cur >= seg.start && cur < seg.end);
+  const rows = document.querySelectorAll('.transcript-item');
+  rows.forEach((r, i) => {
+    if(i === activeIdx){
+      r.classList.add('active');
+      r.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else {
+      r.classList.remove('active');
+    }
+  });
+});
+
+currentAudio.addEventListener('ended', () => {
+  isPlaying = false;
+  updatePlayButton(false);
+});
+
+/* Waveform Canvas Çizimi */
+function initWaveformVisualizer(){
+  const canvas = document.getElementById('waveform-canvas');
+  if(!canvas) return;
+  canvasCtx = canvas.getContext('2d');
+  canvas.width = canvas.parentElement.clientWidth;
+  canvas.height = 80;
+
+  function draw(){
+    animId = requestAnimationFrame(draw);
+    canvasCtx.fillStyle = '#070a12';
+    canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const bars = 60;
+    const barW = canvas.width / bars;
+    const t = Date.now() * 0.005;
+
+    for(let i = 0; i < bars; i++){
+      let h = 8;
+      if(isPlaying){
+        h = 10 + Math.sin(i * 0.3 + t) * 18 + Math.cos(i * 0.15 - t) * 15;
+        h = Math.max(6, Math.min(65, h));
+      }
+      const x = i * barW;
+      const y = (canvas.height - h) / 2;
+
+      // Gradyan
+      const grad = canvasCtx.createLinearGradient(0, y, 0, y + h);
+      grad.addColorStop(0, '#60a5fa');
+      grad.addColorStop(1, '#2563eb');
+
+      canvasCtx.fillStyle = grad;
+      canvasCtx.fillRect(x + 2, y, barW - 4, h);
+    }
+  }
+  if(!animId) draw();
+}
+
+/* ==================== DIŞA AKTARMA ==================== */
+function downloadAudio(){
+  if(!currentAudio.src){ alert("Lütfen önce bir ses üretin."); return; }
+  const a = document.createElement('a');
+  a.href = currentAudio.src;
+  a.download = "VibeVoice_Podcast_Oturumu.mp3";
+  a.click();
+}
+
+function downloadTranscript(){
+  if(!currentTranscriptData.length){ alert("Lütfen önce bir podcast üretin."); return; }
+  let txt = "=== VIBEVOICE PODCAST TRANSKRİPTİ ===\n\n";
+  currentTranscriptData.forEach(item => {
+    const m = Math.floor(item.start / 60), s = Math.floor(item.start % 60);
+    txt += `[${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}] ${item.speaker}: ${item.text}\n`;
+  });
+  const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = "VibeVoice_Transkript.txt";
+  a.click();
+}
+
+function downloadSrt(){
+  if(!currentTranscriptData.length){ alert("Lütfen önce bir podcast üretin."); return; }
+  let srt = "";
+  currentTranscriptData.forEach((item, i) => {
+    srt += `${i+1}\n`;
+    srt += `${formatSrtTime(item.start)} --> ${formatSrtTime(item.end)}\n`;
+    srt += `${item.speaker}: ${item.text}\n\n`;
+  });
+  const blob = new Blob([srt], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = "VibeVoice_Altyazi.srt";
+  a.click();
+}
+
+function formatSrtTime(t){
+  const h = Math.floor(t / 3600);
+  const m = Math.floor((t % 3600) / 60);
+  const s = Math.floor(t % 60);
+  const ms = Math.floor((t - Math.floor(t)) * 1000);
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')},${String(ms).padStart(3,'0')}`;
+}
+
+/* ==================== API MODALI ==================== */
+function openApiModal(){ document.getElementById('api-modal').style.display = 'flex'; }
+function closeApiModal(){ document.getElementById('api-modal').style.display = 'none'; }
+function testAndSaveApi(){
+  const url = document.getElementById('api-url-input').value.trim();
+  if(!url){ alert("Geçerli bir API adresi girin."); return; }
+  localStorage.setItem('vibevoice_api_url', url);
+  document.getElementById('api-status-text').innerText = "API: Özel Sunucu Bağlı";
+  alert(`API adresi başarıyla kaydedildi: ${url}`);
+  closeApiModal();
+}
+
+/* ==================== VİTRİN SYNCPLAYER LOGIC ==================== */
 function mmssms(t){
   const m = Math.floor(t/60), s = Math.floor(t%60), ms = Math.floor((t-Math.floor(t))*1000);
   return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(ms).padStart(3,'0')}`;
 }
-
-/* ---- Canlı Senkronize Transkript Oynatıcı Sınıfı ---- */
-class SyncPlayer{
+class ShowcasePlayer{
   constructor(key, segs){
-    this.audio   = document.getElementById(`audio-${key}`);
-    this.transEl = document.getElementById(`trans-${key}`);
-    this.idx = -1;
+    this.audio = document.getElementById(`audio-${key}`);
+    this.trans = document.getElementById(`trans-${key}`);
     this.segments = segs.slice().sort((a,b)=>a.start-b.start);
-    for(let i=0;i<this.segments.length;i++){
-      const cur=this.segments[i], nxt=this.segments[i+1];
-      if (cur.end == null) cur.end = nxt ? nxt.start : Infinity;
-    }
-    this.shouldScroll = false;
     this.render(); this.bind();
   }
-  esc(s){
-    return String(s||'').replace(/[&<>"']/g, ch => (
-      {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]
-    ));
-  }
   render(){
-    this.transEl.innerHTML = '';
-    this.segments.forEach((seg,i)=>{
+    if(!this.trans) return;
+    this.trans.innerHTML = '';
+    this.segments.forEach((seg, i) => {
       const d = document.createElement('div');
       d.className = 'line';
-      d.dataset.idx = i;
       d.innerHTML = `
         <div class="ts">${mmssms(seg.start)}</div>
-        <div class="spk">${this.esc(seg.speaker || '')}</div>
-        <div class="txt">${this.esc(seg.text)}</div>
+        <div class="spk">${escHtml(seg.speaker || '')}</div>
+        <div class="txt">${escHtml(seg.text)}</div>
       `;
-      d.onclick = () => this.seek(seg.start, true, true);
-      this.transEl.appendChild(d);
+      d.onclick = () => { this.audio.currentTime = seg.start; this.audio.play(); };
+      this.trans.appendChild(d);
     });
-  }
-  seek(t, autoplay=false, scroll=false){
-    this.shouldScroll = !!scroll;
-    this.audio.currentTime = Math.max(0, t);
-    if (autoplay) this.audio.play().catch(()=>{});
-  }
-  findIdx(t){
-    let lo=0, hi=this.segments.length-1, ans=-1;
-    while (lo<=hi){
-      const mid=(lo+hi)>>1, seg=this.segments[mid];
-      if (t < seg.start) hi=mid-1;
-      else if (t >= seg.end) lo=mid+1;
-      else { ans=mid; break; }
-    }
-    return ans;
-  }
-  setActive(i, scroll=true){
-    const prev = this.idx >= 0 ? this.transEl.querySelector(`.line[data-idx="${this.idx}"]`) : null;
-    const next = i >= 0 ? this.transEl.querySelector(`.line[data-idx="${i}"]`) : null;
-
-    if (i === this.idx){
-      if (scroll && next){
-        const c=this.transEl;
-        const targetTop = next.offsetTop - c.offsetTop;
-        const maxTop = c.scrollHeight - c.clientHeight;
-        c.scrollTo({ top: Math.max(0, Math.min(targetTop, maxTop)), behavior: 'smooth' });
-      }
-      return;
-    }
-    if (prev) prev.classList.remove('active');
-    if (next){
-      next.classList.add('active');
-      if (scroll){
-        const c=this.transEl;
-        const targetTop = next.offsetTop - c.offsetTop;
-        const maxTop = c.scrollHeight - c.clientHeight;
-        c.scrollTo({ top: Math.max(0, Math.min(targetTop, maxTop)), behavior: 'smooth' });
-      }
-    }
-    this.idx = i;
-  }
-  onTime(){
-    const i = this.findIdx(this.audio.currentTime);
-    const doScroll = !this.audio.paused;
-    this.setActive(i, doScroll);
   }
   bind(){
-    const t = () => this.onTime();
-    this.audio.addEventListener('timeupdate', t);
-    this.audio.addEventListener('seeked',  () => { this.shouldScroll = true; this.onTime(); });
-    this.audio.addEventListener('seeking', () => { this.shouldScroll = true; });
-    this.audio.addEventListener('play', t);
-    this.audio.addEventListener('loadedmetadata', ()=>{
-      const dur = isFinite(this.audio.duration) ? this.audio.duration : Infinity;
-      for (let i=0;i<this.segments.length;i++){
-        if (this.segments[i].end === Infinity) this.segments[i].end = dur;
-      }
+    if(!this.audio) return;
+    this.audio.addEventListener('timeupdate', () => {
+      const cur = this.audio.currentTime;
+      const lines = this.trans.querySelectorAll('.line');
+      this.segments.forEach((seg, idx) => {
+        if(cur >= seg.start && cur < (seg.end || seg.start + 4)){
+          lines[idx]?.classList.add('active');
+        } else {
+          lines[idx]?.classList.remove('active');
+        }
+      });
     });
   }
 }
-
-/* ---- Örnekleri Başlat ---- */
 function initCases(){
-  document.querySelectorAll('.case').forEach(section => {
-    const key  = section.dataset.key;
-    const json = section.dataset.json;
-    if (!key || !json) return;
-    const audioEl = section.querySelector('audio');
-    const transEl = section.querySelector('.transcript');
-    if (audioEl && transEl){
-      audioEl.id  = `audio-${key}`;
-      transEl.id  = `trans-${key}`;
-    }
-    fetch(json)
-      .then(r => r.json())
-      .then(data => { new SyncPlayer(key, data); })
-      .catch(err => console.error(`init ${key} failed:`, err));
+  document.querySelectorAll('.case').forEach(s => {
+    const k = s.dataset.key; const j = s.dataset.json;
+    if(!k || !j) return;
+    fetch(j).then(r => r.json()).then(d => new ShowcasePlayer(k, d)).catch(()=>{});
   });
 }
-window.addEventListener('DOMContentLoaded', initCases);
+
+// Başlangıç yüklemesi: İlk şablonu yükle
+window.addEventListener('DOMContentLoaded', () => {
+  loadTemplate('ai-tech');
+  initWaveformVisualizer();
+});
 </script>
 
 </body>
