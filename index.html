@@ -981,30 +981,74 @@
 
 <!-- Ses Ayarları Modalı -->
 <div class="modal-overlay" id="voice-modal">
-  <div class="modal-content">
+  <div class="modal-content" style="max-width: 580px;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-      <h3 style="margin:0; font-size:1.15rem; color:#fff;"><i class="fa-solid fa-gear" style="color:#f43f5e;"></i> Türkçe Ses Motoru Yapılandırması</h3>
+      <h3 style="margin:0; font-size:1.15rem; color:#fff;"><i class="fa-solid fa-volume-high" style="color:#f43f5e;"></i> Türkçe Ses Motorları & Karakter Eşleştirme</h3>
       <button onclick="closeVoiceSettings()" style="background:none; border:none; color:var(--text-muted); font-size:1.2rem; cursor:pointer;">&times;</button>
     </div>
-    <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:16px;">
-      Tarayıcınızda algılanan ses motorları: <span id="detected-voices-count" style="color:#fff; font-weight:700;">Yükleniyor...</span>
-    </p>
+    
+    <div style="background:#090d16; border:1px solid var(--border); border-radius:8px; padding:10px 14px; margin-bottom:14px; font-size:0.84rem; display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <span style="color:var(--text-muted);">Sistemde Algılanan Sesler:</span>
+        <strong id="detected-voices-count" style="color:#34d399; margin-left:6px;">Yükleniyor...</strong>
+      </div>
+      <a href="ms-settings:speech" target="_blank" class="btn-sm btn-outline" style="font-size:0.75rem; padding:4px 8px;" title="Windows Ayarlarından Yeni Türkçe Ses Yükle">
+        <i class="fa-brands fa-windows"></i> Windows'a Ses Ekle
+      </a>
+    </div>
 
-    <div style="margin-bottom:12px;">
-      <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:4px; color:#cbd5e1;">Mert (Erkek Ses Profili)</label>
+    <!-- Konuşmacı 1: Mert -->
+    <div style="margin-bottom:10px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+        <label style="font-size:0.82rem; font-weight:700; color:#3b82f6;">🔵 Mert (Sunucu - Tok Erkek)</label>
+        <button class="btn-sm btn-outline" style="font-size:0.75rem; padding:2px 8px;" onclick="testSpeakerVoice('Mert')">
+          <i class="fa-solid fa-volume-high"></i> Sına
+        </button>
+      </div>
       <select id="voice-select-mert" class="template-select" style="width:100%;"></select>
     </div>
-    <div style="margin-bottom:12px;">
-      <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:4px; color:#cbd5e1;">Selin (Kadın Ses Profili)</label>
+
+    <!-- Konuşmacı 2: Selin -->
+    <div style="margin-bottom:10px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+        <label style="font-size:0.82rem; font-weight:700; color:#10b981;">🟢 Selin (Uzman - Akıcı Kadın)</label>
+        <button class="btn-sm btn-outline" style="font-size:0.75rem; padding:2px 8px;" onclick="testSpeakerVoice('Selin')">
+          <i class="fa-solid fa-volume-high"></i> Sına
+        </button>
+      </div>
       <select id="voice-select-selin" class="template-select" style="width:100%;"></select>
     </div>
-    <div style="margin-bottom:18px;">
-      <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:4px; color:#cbd5e1;">Harici GPU API Adresi (FastAPI `server.py`)</label>
-      <input type="text" id="api-url-input" value="http://localhost:8000" style="width:100%; padding:8px 12px; background:#0b111d; border:1px solid var(--border); border-radius:6px; color:#fff; font-family:monospace; font-size:0.85rem;">
+
+    <!-- Konuşmacı 3: Can -->
+    <div style="margin-bottom:10px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+        <label style="font-size:0.82rem; font-weight:700; color:#f59e0b;">🟡 Can (Konuk - Dinamik Genç)</label>
+        <button class="btn-sm btn-outline" style="font-size:0.75rem; padding:2px 8px;" onclick="testSpeakerVoice('Can')">
+          <i class="fa-solid fa-volume-high"></i> Sına
+        </button>
+      </div>
+      <select id="voice-select-can" class="template-select" style="width:100%;"></select>
     </div>
 
-    <button class="btn-sm btn-api" style="width:100%; justify-content:center; padding:10px;" onclick="saveVoiceSettings()">
-      <i class="fa-solid fa-check"></i> Ayarları Kaydet
+    <!-- Konuşmacı 4: Deniz -->
+    <div style="margin-bottom:14px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+        <label style="font-size:0.82rem; font-weight:700; color:#ec4899;">🟣 Deniz (Moderatör - Dengeli)</label>
+        <button class="btn-sm btn-outline" style="font-size:0.75rem; padding:2px 8px;" onclick="testSpeakerVoice('Deniz')">
+          <i class="fa-solid fa-volume-high"></i> Sına
+        </button>
+      </div>
+      <select id="voice-select-deniz" class="template-select" style="width:100%;"></select>
+    </div>
+
+    <!-- İpucu Notu -->
+    <div style="background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.25); border-radius:8px; padding:10px 12px; margin-bottom:16px; font-size:0.78rem; color:#93c5fd; line-height:1.5;">
+      <i class="fa-solid fa-circle-info"></i> <strong>Ses Motoru İpucu:</strong>
+      <strong>Microsoft Edge</strong> tarayıcısında açarsanız <em>Microsoft Ahmet Online (Natural)</em> ve <em>Microsoft Emel Online (Natural)</em> stüdyo kalitesindeki sesler; <strong>Google Chrome</strong>'da <em>Google Türkçe</em>; <strong>Windows</strong>'ta <em>Microsoft Tolga</em>; <strong>Apple Safari</strong>'de ise <em>Apple Tolga & Yelda</em> sesleri otomatik olarak kullanılabilir hale gelir.
+    </div>
+
+    <button class="btn-sm btn-api" style="width:100%; justify-content:center; padding:11px; font-size:0.9rem;" onclick="saveVoiceSettings()">
+      <i class="fa-solid fa-check"></i> Seçilen Sesleri Kaydet
     </button>
   </div>
 </div>
@@ -1067,7 +1111,29 @@ let bgMusicGain = null;
 let bgMusicOscs = [];
 let animId = null;
 
-/* Sesleri Algıla */
+/* Sesleri Algıla ve Konuşmacılara Ata */
+function populateVoiceSelect(selectId, storageKey, preferredKeywords){
+  const el = document.getElementById(selectId);
+  if(!el) return;
+  el.innerHTML = '';
+  const list = turkishVoices.length > 0 ? turkishVoices : availableVoices;
+  const saved = localStorage.getItem(storageKey);
+  
+  let selectedIndex = 0;
+  list.forEach((v, idx) => {
+    el.add(new Option(`${v.name} (${v.lang})`, v.name));
+    if(saved && v.name === saved){
+      selectedIndex = idx;
+    } else if(!saved && preferredKeywords){
+      const lower = v.name.toLowerCase();
+      if(preferredKeywords.some(kw => lower.includes(kw))){
+        selectedIndex = idx;
+      }
+    }
+  });
+  if(list.length > 0) el.selectedIndex = selectedIndex;
+}
+
 function loadVoices(){
   if(!window.speechSynthesis) return;
   availableVoices = window.speechSynthesis.getVoices();
@@ -1078,25 +1144,41 @@ function loadVoices(){
     countEl.innerText = `${availableVoices.length} sistem sesi (${turkishVoices.length} Türkçe)`;
   }
 
-  // Ayar listelerini doldur
-  const mertSelect = document.getElementById('voice-select-mert');
-  const selinSelect = document.getElementById('voice-select-selin');
-  if(mertSelect && selinSelect){
-    mertSelect.innerHTML = '';
-    selinSelect.innerHTML = '';
-    const list = turkishVoices.length > 0 ? turkishVoices : availableVoices;
-    list.forEach(v => {
-      mertSelect.add(new Option(`${v.name} (${v.lang})`, v.name));
-      selinSelect.add(new Option(`${v.name} (${v.lang})`, v.name));
-    });
-    // Kadın sesine uygun eşleştirme
-    for(let i=0; i<list.length; i++){
-      if(list[i].name.toLowerCase().includes('emel') || list[i].name.toLowerCase().includes('female') || list[i].name.toLowerCase().includes('yelda')){
-        selinSelect.selectedIndex = i;
-        break;
-      }
-    }
-  }
+  // 4 Konuşmacı için ses seçim listelerini doldur
+  populateVoiceSelect('voice-select-mert', 'voice_mert', ['ahmet', 'tolga', 'male', 'erkek']);
+  populateVoiceSelect('voice-select-selin', 'voice_selin', ['emel', 'female', 'yelda', 'kadın']);
+  populateVoiceSelect('voice-select-can', 'voice_can', ['can', 'google', 'ahmet', 'tolga']);
+  populateVoiceSelect('voice-select-deniz', 'voice_deniz', ['deniz', 'tolga', 'emel', 'yelda']);
+}
+
+function saveVoiceSettings(){
+  const mert = document.getElementById('voice-select-mert')?.value;
+  const selin = document.getElementById('voice-select-selin')?.value;
+  const can = document.getElementById('voice-select-can')?.value;
+  const deniz = document.getElementById('voice-select-deniz')?.value;
+
+  if(mert) localStorage.setItem('voice_mert', mert);
+  if(selin) localStorage.setItem('voice_selin', selin);
+  if(can) localStorage.setItem('voice_can', can);
+  if(deniz) localStorage.setItem('voice_deniz', deniz);
+
+  closeVoiceSettings();
+  alert("Türkçe ses tercihleri başarıyla kaydedildi ve konuşmacılara atandı.");
+}
+
+function testSpeakerVoice(spk){
+  if(window.speechSynthesis) window.speechSynthesis.cancel();
+  const samples = {
+    "Mert": "Merhaba! Ben Mert, VibeVoice Türkçe stüdyosundayım.",
+    "Selin": "Selamlar! Ben Selin, yapay zeka ve ses modellemesi uzmanıyım.",
+    "Can": "Herkese selam! Ben Can, bu haftaki podcast konuğuyum.",
+    "Deniz": "İyi günler. Ben Deniz, bugünkü panelin moderatörüyüm."
+  };
+  const utter = new SpeechSynthesisUtterance(samples[spk] || "Merhaba");
+  utter.lang = "tr-TR";
+  const baseRate = parseFloat(document.getElementById('speed-slider')?.value || 1.0);
+  assignSpeakerVoiceAndPitch(utter, spk, "", baseRate);
+  window.speechSynthesis.speak(utter);
 }
 if(window.speechSynthesis){
   window.speechSynthesis.onvoiceschanged = loadVoices;
@@ -1256,28 +1338,37 @@ function assignSpeakerVoiceAndPitch(utter, speaker, emotion, baseRate){
   let rate = baseRate;
   let vol = 1.0;
 
-  // Konuşmacı profilleri
+  // Konuşmacı profilleri ve özel seçilmiş sesler
   const spkLower = speaker.toLowerCase();
-  if(spkLower.includes("selin") || spkLower.includes("kadın") || spkLower.includes("emel")){
-    // Kadın sesi
-    pitch = 1.25;
-    rate = baseRate * 1.04;
-    const femaleVoice = trList.find(v => v.name.toLowerCase().includes("emel") || v.name.toLowerCase().includes("female"));
-    if(femaleVoice) voice = femaleVoice;
-  } else if(spkLower.includes("mert")){
-    // Tok erkek sesi
-    pitch = 0.85;
-    rate = baseRate * 0.98;
-    const maleVoice = trList.find(v => v.name.toLowerCase().includes("ahmet") || v.name.toLowerCase().includes("male"));
-    if(maleVoice) voice = maleVoice;
+  let customVoiceName = null;
+
+  if(spkLower.includes("mert")){
+    customVoiceName = localStorage.getItem('voice_mert') || document.getElementById('voice-select-mert')?.value;
+    pitch = 0.85; rate = baseRate * 0.98;
+  } else if(spkLower.includes("selin") || spkLower.includes("kadın")){
+    customVoiceName = localStorage.getItem('voice_selin') || document.getElementById('voice-select-selin')?.value;
+    pitch = 1.25; rate = baseRate * 1.04;
   } else if(spkLower.includes("can")){
-    // Genç dinamik erkek sesi
-    pitch = 1.05;
-    rate = baseRate * 1.08;
+    customVoiceName = localStorage.getItem('voice_can') || document.getElementById('voice-select-can')?.value;
+    pitch = 1.05; rate = baseRate * 1.08;
   } else if(spkLower.includes("deniz")){
-    // Dengeli moderatör
-    pitch = 0.98;
-    rate = baseRate * 0.96;
+    customVoiceName = localStorage.getItem('voice_deniz') || document.getElementById('voice-select-deniz')?.value;
+    pitch = 0.98; rate = baseRate * 0.96;
+  }
+
+  // Kullanıcı tarafından atanmış ses varsa uygula
+  if(customVoiceName){
+    const found = availableVoices.find(v => v.name === customVoiceName);
+    if(found) voice = found;
+  } else {
+    // Otomatik en iyi ses eşleştirmesi
+    if(spkLower.includes("selin") || spkLower.includes("kadın")){
+      const fv = trList.find(v => v.name.toLowerCase().includes("emel") || v.name.toLowerCase().includes("female") || v.name.toLowerCase().includes("yelda"));
+      if(fv) voice = fv;
+    } else if(spkLower.includes("mert")){
+      const mv = trList.find(v => v.name.toLowerCase().includes("ahmet") || v.name.toLowerCase().includes("tolga") || v.name.toLowerCase().includes("male"));
+      if(mv) voice = mv;
+    }
   }
 
   // Duygu etiketleri etkisi
