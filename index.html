@@ -1323,7 +1323,6 @@ function speakCurrentLine(){
 }
 
 function assignSpeakerVoiceAndPitch(utter, speaker, emotion, baseRate){
-  // Türkçe sesleri kullan
   const trList = turkishVoices.length > 0 ? turkishVoices : availableVoices;
   let voice = trList[0];
 
@@ -1331,30 +1330,41 @@ function assignSpeakerVoiceAndPitch(utter, speaker, emotion, baseRate){
   let rate = baseRate;
   let vol = 1.0;
 
-  // Konuşmacı profilleri ve özel seçilmiş sesler
   const spkLower = speaker.toLowerCase();
   let customVoiceName = null;
 
+  // Google Chrome gibi tek Türkçe ses sunan ortamlarda (Google Türkçe)
+  // seslerin birebir aynı gelmesini engellemek için genişletilmiş akustik perde (pitch) ve tempo ayrıştırması:
+  const isSingleVoice = trList.length <= 1 || (trList.length > 0 && trList.every(v => v.name.toLowerCase().includes('google')));
+
   if(spkLower.includes("mert")){
     customVoiceName = localStorage.getItem('voice_mert') || document.getElementById('voice-select-mert')?.value;
-    pitch = 0.85; rate = baseRate * 0.98;
+    // Tok, derin, oturaklı erkek tonu (Bass)
+    pitch = isSingleVoice ? 0.52 : 0.75;
+    rate = baseRate * 0.90;
   } else if(spkLower.includes("selin") || spkLower.includes("kadın")){
     customVoiceName = localStorage.getItem('voice_selin') || document.getElementById('voice-select-selin')?.value;
-    pitch = 1.25; rate = baseRate * 1.04;
+    // Parlak, net, akıcı kadın tonu (Soprano)
+    pitch = isSingleVoice ? 1.62 : 1.30;
+    rate = baseRate * 1.08;
   } else if(spkLower.includes("can")){
     customVoiceName = localStorage.getItem('voice_can') || document.getElementById('voice-select-can')?.value;
-    pitch = 1.05; rate = baseRate * 1.08;
+    // Genç, dinamik ve enerjik tenor tonu
+    pitch = isSingleVoice ? 1.16 : 1.05;
+    rate = baseRate * 1.20;
   } else if(spkLower.includes("deniz")){
     customVoiceName = localStorage.getItem('voice_deniz') || document.getElementById('voice-select-deniz')?.value;
-    pitch = 0.98; rate = baseRate * 0.96;
+    // Dengeli, sakin ve resmi moderatör tonu
+    pitch = isSingleVoice ? 0.82 : 0.90;
+    rate = baseRate * 0.96;
   }
 
-  // Kullanıcı tarafından atanmış ses varsa uygula
-  if(customVoiceName){
+  // Farklı sesler mevcutsa gerçek sesleri eşleştir
+  if(customVoiceName && trList.length > 1){
     const found = availableVoices.find(v => v.name === customVoiceName);
     if(found) voice = found;
-  } else {
-    // Otomatik en iyi ses eşleştirmesi
+  } else if(trList.length > 1){
+    // Otomatik çoklu ses ataması (Edge / Safari)
     if(spkLower.includes("selin") || spkLower.includes("kadın")){
       const fv = trList.find(v => v.name.toLowerCase().includes("emel") || v.name.toLowerCase().includes("female") || v.name.toLowerCase().includes("yelda"));
       if(fv) voice = fv;
@@ -1366,20 +1376,21 @@ function assignSpeakerVoiceAndPitch(utter, speaker, emotion, baseRate){
 
   // Duygu etiketleri etkisi
   if(emotion.includes("gülerek") || emotion.includes("heyecanlı")){
-    pitch += 0.15;
-    rate += 0.10;
+    pitch += 0.12;
+    rate += 0.08;
   } else if(emotion.includes("şaşkınlıkla")){
-    pitch += 0.22;
+    pitch += 0.18;
   } else if(emotion.includes("fısıltıyla")){
-    vol = 0.5;
-    rate -= 0.15;
-  } else if(emotion.includes("düşünceli")){
+    vol = 0.45;
     rate -= 0.12;
-    pitch -= 0.05;
+    pitch -= 0.08;
+  } else if(emotion.includes("düşünceli")){
+    rate -= 0.14;
+    pitch -= 0.06;
   }
 
   if(voice) utter.voice = voice;
-  utter.pitch = Math.max(0.5, Math.min(2.0, pitch));
+  utter.pitch = Math.max(0.2, Math.min(2.0, pitch));
   utter.rate = Math.max(0.5, Math.min(2.0, rate));
   utter.volume = vol;
 }
