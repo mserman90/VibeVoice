@@ -840,17 +840,10 @@
         <!-- Ayarlar -->
         <div class="settings-row">
           <div class="setting-item">
-            <label><i class="fa-solid fa-music"></i> Arka Plan Müziği</label>
+            <label><i class="fa-solid fa-volume-xmark"></i> Arka Plan Sesi</label>
             <select id="bg-music">
-              <option value="lofi" selected>Lo-Fi Rahatlatıcı Akorlar</option>
-              <option value="tech">Teknoloji & Siber Ambiyans</option>
-              <option value="coffee">Sıcak Akustik Kafe</option>
-              <option value="none">Müziksiz (Yalnızca Ses)</option>
+              <option value="none" selected>Müziksiz (Yalnızca Net ve Doğal Ses)</option>
             </select>
-          </div>
-          <div class="setting-item">
-            <label><i class="fa-solid fa-volume-low"></i> Müzik Seviyesi (<span id="music-vol-val">%25</span>)</label>
-            <input type="range" id="music-vol" min="0" max="60" value="25" oninput="document.getElementById('music-vol-val').innerText = '%' + this.value">
           </div>
           <div class="setting-item">
             <label><i class="fa-solid fa-gauge-high"></i> Konuşma Temposu (<span id="speed-val">1.0x</span>)</label>
@@ -1643,44 +1636,24 @@ function escHtml(s){
   return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-/* ==================== ARKA PLAN MÜZİĞİ (WEB AUDIO API) ==================== */
+/* ==================== ARKA PLAN SES YÖNETİMİ ==================== */
+// Vınlama, dip gürültüsü ve yapay osilatör sesleri tamamen kaldırıldı.
 function startBgMusic(){
-  const choice = document.getElementById('bg-music').value;
-  if(choice === 'none') return;
-
-  try {
-    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-    if(!AudioContextClass) return;
-    if(!audioCtx) audioCtx = new AudioContextClass();
-    if(audioCtx.state === 'suspended') audioCtx.resume();
-
-    stopBgMusic();
-
-    const vol = (parseFloat(document.getElementById('music-vol').value) || 25) / 100;
-    bgMusicGain = audioCtx.createGain();
-    bgMusicGain.gain.setValueAtTime(vol * 0.15, audioCtx.currentTime);
-    bgMusicGain.connect(audioCtx.destination);
-
-    // Lo-Fi ve Ambiyans Akorları (C, E, G, B)
-    const freqs = choice === 'tech' ? [110, 164.81, 220, 329.63] : [130.81, 164.81, 196.00, 246.94];
-    freqs.forEach(f => {
-      const osc = audioCtx.createOscillator();
-      osc.type = choice === 'tech' ? 'sawtooth' : 'sine';
-      osc.frequency.setValueAtTime(f, audioCtx.currentTime);
-      osc.connect(bgMusicGain);
-      osc.start();
-      bgMusicOscs.push(osc);
-    });
-  } catch(e) {
-    console.warn("Web Audio background music error:", e);
-  }
+  stopBgMusic();
 }
 
 function stopBgMusic(){
-  bgMusicOscs.forEach(o => {
-    try { o.stop(); o.disconnect(); } catch(e){}
-  });
-  bgMusicOscs = [];
+  if(bgMusicOscs && bgMusicOscs.length > 0){
+    bgMusicOscs.forEach(o => {
+      try { o.stop(); o.disconnect(); } catch(e){}
+    });
+    bgMusicOscs = [];
+  }
+  if(audioCtx){
+    try {
+      if(audioCtx.state !== 'closed') audioCtx.suspend();
+    } catch(e){}
+  }
 }
 
 /* ==================== CANLI DALGA BİÇİMİ (WAVEFORM) ==================== */
@@ -1835,6 +1808,9 @@ function initCases(){
 
 // Başlangıç
 window.addEventListener('DOMContentLoaded', () => {
+  stopBgMusic();
+  if(window.speechSynthesis) window.speechSynthesis.cancel();
+
   loadTemplate('tr-ai');
   initWaveformVisualizer();
 
