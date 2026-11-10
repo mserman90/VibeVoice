@@ -3,20 +3,22 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>VibeVoice - Türkçe Kullanım Kılavuzu</title>
+<title>PodcastLab - Kullanım Kılavuzu & Geliştirici Rehberi</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
   :root {
-    --bg: #f8fafc;
-    --card: #ffffff;
-    --text: #0f172a;
-    --muted: #64748b;
-    --border: #e2e8f0;
-    --accent: #2563eb;
-    --accent-hover: #1d4ed8;
-    --code-bg: #1e293b;
-    --code-text: #f1f5f9;
-    --sidebar-w: 280px;
+    --bg: #0b0f19;
+    --card: #111827;
+    --card-secondary: #1f2937;
+    --text: #f3f4f6;
+    --muted: #9ca3af;
+    --border: #374151;
+    --accent: #3b82f6;
+    --accent-hover: #2563eb;
+    --accent-emerald: #10b981;
+    --code-bg: #030712;
+    --code-text: #e2e8f0;
+    --sidebar-w: 290px;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -33,10 +35,10 @@
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(8px);
+    background: rgba(17, 24, 39, 0.92);
+    backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
-    padding: 12px 24px;
+    padding: 14px 28px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -44,16 +46,27 @@
   .navbar-brand {
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--accent);
+    color: #fff;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     text-decoration: none;
+  }
+  .brand-icon {
+    width: 34px;
+    height: 34px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1rem;
   }
   .navbar-nav {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
   }
   .nav-btn {
     display: inline-flex;
@@ -76,36 +89,37 @@
   .nav-btn-outline {
     border: 1px solid var(--border);
     color: var(--text);
-    background: #fff;
+    background: var(--card-secondary);
   }
   .nav-btn-outline:hover {
-    background: #f1f5f9;
+    background: #374151;
+    color: #fff;
   }
 
   /* Düzen: Sol Menü + Ana İçerik */
   .container {
-    max-width: 1240px;
+    max-width: 1280px;
     margin: 0 auto;
-    padding: 32px 24px;
+    padding: 36px 24px;
     display: flex;
-    gap: 40px;
+    gap: 36px;
   }
 
   .sidebar {
     width: var(--sidebar-w);
     flex-shrink: 0;
     position: sticky;
-    top: 80px;
-    height: calc(100vh - 100px);
+    top: 86px;
+    height: calc(100vh - 110px);
     overflow-y: auto;
     padding-right: 12px;
   }
   .sidebar h4 {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
     color: var(--muted);
-    margin: 0 0 12px 8px;
+    margin: 0 0 12px 10px;
   }
   .sidebar ul {
     list-style: none;
@@ -113,27 +127,30 @@
     margin: 0;
   }
   .sidebar li a {
-    display: block;
-    padding: 8px 12px;
-    border-radius: 6px;
-    color: #475569;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    color: #cbd5e1;
     text-decoration: none;
-    font-size: 0.92rem;
+    font-size: 0.9rem;
     transition: background 0.15s, color 0.15s;
+    margin-bottom: 2px;
   }
   .sidebar li a:hover {
-    background: #e2e8f0;
-    color: var(--accent);
+    background: var(--card-secondary);
+    color: #60a5fa;
   }
 
   .content {
     flex: 1;
     min-width: 0;
     background: var(--card);
-    padding: 36px 44px;
-    border-radius: 12px;
+    padding: 38px 46px;
+    border-radius: 14px;
     border: 1px solid var(--border);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
   }
 
   h1 {
@@ -141,59 +158,60 @@
     line-height: 1.25;
     margin-top: 0;
     margin-bottom: 12px;
-    color: #0f172a;
+    color: #fff;
   }
   .subtitle {
     color: var(--muted);
     font-size: 1.1rem;
-    margin-bottom: 28px;
+    margin-bottom: 30px;
   }
 
   h2 {
     font-size: 1.5rem;
-    margin-top: 40px;
-    margin-bottom: 16px;
-    padding-bottom: 8px;
+    margin-top: 48px;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
     border-bottom: 1px solid var(--border);
-    color: #1e293b;
+    color: #f1f5f9;
     display: flex;
     align-items: center;
     gap: 10px;
   }
   h3 {
     font-size: 1.2rem;
-    margin-top: 24px;
-    margin-bottom: 10px;
-    color: #334155;
+    margin-top: 26px;
+    margin-bottom: 12px;
+    color: #93c5fd;
   }
 
   p, li {
-    color: #334155;
+    color: #cbd5e1;
     font-size: 1rem;
   }
 
   /* Bilgi Kutuları */
   .callout {
     padding: 16px 20px;
-    border-radius: 8px;
+    border-radius: 10px;
     margin: 20px 0;
     border-left: 4px solid;
     font-size: 0.95rem;
+    line-height: 1.6;
   }
   .callout-info {
-    background: #eff6ff;
+    background: rgba(59, 130, 246, 0.12);
     border-color: #3b82f6;
-    color: #1e40af;
+    color: #bfdbfe;
   }
   .callout-warning {
-    background: #fffbeb;
+    background: rgba(245, 158, 11, 0.12);
     border-color: #f59e0b;
-    color: #92400e;
+    color: #fde68a;
   }
   .callout-success {
-    background: #f0fdf4;
+    background: rgba(16, 185, 129, 0.12);
     border-color: #10b981;
-    color: #065f46;
+    color: #a7f3d0;
   }
 
   /* Kod Blokları */
@@ -201,16 +219,17 @@
     background: var(--code-bg);
     color: var(--code-text);
     padding: 16px 20px;
-    border-radius: 8px;
+    border-radius: 10px;
     overflow-x: auto;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 0.88rem;
-    line-height: 1.5;
+    line-height: 1.55;
+    border: 1px solid var(--border);
   }
   code {
     font-family: inherit;
-    background: #e2e8f0;
-    color: #0f172a;
+    background: #1f2937;
+    color: #93c5fd;
     padding: 2px 6px;
     border-radius: 4px;
     font-size: 0.88em;
@@ -225,7 +244,7 @@
   table {
     width: 100%;
     border-collapse: collapse;
-    margin: 20px 0;
+    margin: 22px 0;
     font-size: 0.95rem;
   }
   th, td {
@@ -234,12 +253,12 @@
     border: 1px solid var(--border);
   }
   th {
-    background: #f1f5f9;
-    color: #1e293b;
+    background: var(--card-secondary);
+    color: #f1f5f9;
     font-weight: 600;
   }
   tr:nth-child(even) {
-    background: #f8fafc;
+    background: rgba(255, 255, 255, 0.02);
   }
 
   /* Rozetler */
@@ -249,14 +268,41 @@
     border-radius: 6px;
     font-size: 0.78rem;
     font-weight: 600;
-    text-transform: uppercase;
   }
-  .badge-blue { background: #dbeafe; color: #1e40af; }
-  .badge-green { background: #dcfce7; color: #166534; }
+  .badge-blue { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+  .badge-green { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+  .badge-amber { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+
+  /* Kart Izgarası */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+  }
+  .feature-card {
+    background: var(--card-secondary);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+  }
+  .feature-card h4 {
+    margin: 0 0 8px 0;
+    color: #93c5fd;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+  }
+  .feature-card p {
+    margin: 0;
+    font-size: 0.92rem;
+    color: var(--muted);
+  }
 
   footer {
     text-align: center;
-    padding: 32px 0;
+    padding: 36px 0;
     color: var(--muted);
     font-size: 0.9rem;
     border-top: 1px solid var(--border);
@@ -284,19 +330,21 @@
 <!-- Gezinme Çubuğu -->
 <nav class="navbar">
   <a href="index.html" class="navbar-brand">
-    <i class="fa-solid fa-flask"></i>
+    <div class="brand-icon">
+      <i class="fa-solid fa-flask"></i>
+    </div>
     <span>PodcastLab</span>
   </a>
   <div class="navbar-nav">
-    <a href="index.html" class="nav-btn nav-btn-outline">
-      <i class="fa-solid fa-play"></i>
-      <span>Canlı Demo & Sesler</span>
+    <a href="index.html" class="nav-btn nav-btn-primary">
+      <i class="fa-solid fa-sliders"></i>
+      <span>PodcastLab Stüdyo</span>
     </a>
     <a href="https://github.com/microsoft/VibeVoice" target="_blank" class="nav-btn nav-btn-outline">
       <i class="fa-brands fa-github"></i>
       <span>GitHub</span>
     </a>
-    <a href="https://huggingface.co/collections/microsoft/vibevoice-68a2ef24a875c44be47b034f" target="_blank" class="nav-btn nav-btn-primary">
+    <a href="https://huggingface.co/collections/microsoft/vibevoice-68a2ef24a875c44be47b034f" target="_blank" class="nav-btn nav-btn-outline">
       <i class="fa-solid fa-robot"></i>
       <span>Modeller</span>
     </a>
@@ -306,262 +354,241 @@
 <div class="container">
   <!-- Sol İçindekiler Menüsü -->
   <aside class="sidebar">
-    <h4>İçindekiler</h4>
+    <h4>Rehber İçeriği</h4>
     <ul>
-      <li><a href="#genel-bakis"><i class="fa-solid fa-compass"></i> 1. VibeVoice Nedir?</a></li>
-      <li><a href="#temel-ozellikler"><i class="fa-solid fa-star"></i> 2. Öne Çıkan Özellikler</a></li>
-      <li><a href="#mimari"><i class="fa-solid fa-diagram-project"></i> 3. Model Mimarisi</a></li>
-      <li><a href="#gereksinimler"><i class="fa-solid fa-microchip"></i> 4. Sistem Gereksinimleri</a></li>
-      <li><a href="#kurulum"><i class="fa-solid fa-terminal"></i> 5. Adım Adım Kurulum</a></li>
-      <li><a href="#tts-kullanimi"><i class="fa-solid fa-volume-high"></i> 6. Ses Üretimi (TTS)</a></li>
-      <li><a href="#asr-kullanimi"><i class="fa-solid fa-headphones"></i> 7. Ses Tanıma (ASR)</a></li>
-      <li><a href="#ipucu-parametreler"><i class="fa-solid fa-sliders"></i> 8. Parametreler ve İpuçları</a></li>
-      <li><a href="#faq"><i class="fa-solid fa-circle-question"></i> 9. Sıkça Sorulan Sorular</a></li>
+      <li><a href="#genel-bakis"><i class="fa-solid fa-compass"></i> 1. PodcastLab Nedir?</a></li>
+      <li><a href="#temel-ozellikler"><i class="fa-solid fa-star"></i> 2. Öne Çıkan Yetenekler</a></li>
+      <li><a href="#cift-motor"><i class="fa-solid fa-microchip"></i> 3. Çift Motorlu Mimari</a></li>
+      <li><a href="#studio-kullanimi"><i class="fa-solid fa-sliders"></i> 4. Stüdyo Kullanım Rehberi</a></li>
+      <li><a href="#ses-motorlari"><i class="fa-solid fa-volume-high"></i> 5. Türkçe Ses Motorları & Kurulum</a></li>
+      <li><a href="#tarayici-ayrimi"><i class="fa-solid fa-headphones"></i> 6. Edge & Chrome Karakter Ayrıştırması</a></li>
+      <li><a href="#gpu-kurulum"><i class="fa-solid fa-server"></i> 7. Yerel / GPU Sunucusu Kurulumu</a></li>
+      <li><a href="#tunneling-rehberi"><i class="fa-solid fa-shield-halved"></i> 8. HTTPS & Tünelleme (Cloudflare/ngrok)</a></li>
+      <li><a href="#disa-aktar"><i class="fa-solid fa-file-export"></i> 9. Transkript ve SRT İndirme</a></li>
+      <li><a href="#faq"><i class="fa-solid fa-circle-question"></i> 10. Sıkça Sorulan Sorular</a></li>
     </ul>
   </aside>
 
   <!-- Ana Doküman İçeriği -->
   <main class="content">
-    <h1>PodcastLab: VibeVoice Türkçe Kullanım Kılavuzu</h1>
-    <p class="subtitle">Microsoft Research tarafından geliştirilen, yeni nesil çok konuşmacılı ve uzun süreli ses üretimi (TTS) ve tanıma (ASR) yapay zeka model ailesi için kapsamlı geliştirici rehberi.</p>
+    <h1>PodcastLab: Kullanım Kılavuzu & Geliştirici Rehberi</h1>
+    <p class="subtitle">Microsoft VibeVoice mimarisi ve gelişmiş Türkçe ses sentezi motorlarını bir araya getiren çok konuşmacılı yeni nesil podcast stüdyosu.</p>
 
-    <!-- 1. VibeVoice Nedir? -->
+    <!-- 1. PodcastLab Nedir? -->
     <section id="genel-bakis">
-      <h2><i class="fa-solid fa-compass" style="color:var(--accent);"></i> 1. VibeVoice Nedir?</h2>
+      <h2><i class="fa-solid fa-compass" style="color:var(--accent);"></i> 1. PodcastLab Nedir?</h2>
       <p>
-        <strong>VibeVoice</strong>, Microsoft Research tarafından geliştirilen, metin girdilerinden uzun süreli, yüksek gerçeklikte, duygusal ve çok konuşmacılı diyalog sesleri (örneğin podcast'ler, röportajlar ve sesli kitaplar) üretebilen açık kaynaklı bir ses yapay zekası (Voice AI) çatısıdır.
+        <strong>PodcastLab</strong>, metin girdilerini profesyonel radyo ve podcast kalitesinde, çok konuşmacılı, duygu vurgulu ve arka plan müzikli bir ses prodüksiyonuna dönüştüren modern bir yapay zeka stüdyosudur.
+      </p>
+      <p>
+        Altyapısında Microsoft Research tarafından geliştirilen açık kaynaklı <strong>VibeVoice</strong> mimarisini ve tarayıcı yerel nöral ses kütüphanelerini barındırır. Tek bir konuşmacının robotik okuması yerine, 4 farklı karakterin doğal diyalog kurabildiği uzun soluklu podcast'ler üretilmesini sağlar.
       </p>
       <div class="callout callout-info">
         <i class="fa-solid fa-circle-info"></i>
-        <strong>Temel Fark:</strong> Geleneksel metinden sese (TTS) sistemleri genellikle tek konuşmacılı, kısa (15-30 saniye) ve duygusal derinlikten uzak cümleler üretir. VibeVoice ise <strong>90 dakikaya varan kesintisiz ses üretimini</strong> ve <strong>4 farklı konuşmacının doğal sıra alışlarını (turn-taking)</strong> destekler.
+        <strong>Temel Fark:</strong> Sıradan TTS (Metinden Sese) araçları sadece tek bir sesi monoton biçimde okurken, PodcastLab diyalog sırasını, duygu etiketlerini (gülme, şaşkınlık vb.) ve arka plan ambiyansını tek bir oturumda birleştirir.
       </div>
     </section>
 
     <!-- 2. Öne Çıkan Özellikler -->
     <section id="temel-ozellikler">
-      <h2><i class="fa-solid fa-star" style="color:var(--accent);"></i> 2. Öne Çıkan Özellikler</h2>
+      <h2><i class="fa-solid fa-star" style="color:var(--accent);"></i> 2. Öne Çıkan Yetenekler</h2>
       <table>
         <thead>
           <tr>
             <th>Özellik</th>
-            <th>VibeVoice</th>
-            <th>Geleneksel TTS Modelleri</th>
+            <th>PodcastLab Stüdyo</th>
+            <th>Geleneksel TTS Araçları</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><strong>Maksimum Süre</strong></td>
-            <td>90 dakikaya kadar tek seferde</td>
-            <td>15 - 60 saniye arası parçalar</td>
-          </tr>
-          <tr>
             <td><strong>Konuşmacı Sayısı</strong></td>
-            <td>4 eşzamanlı/sıralı konuşmacı</td>
-            <td>Genellikle 1 veya 2 konuşmacı</td>
+            <td><strong>4 Eşzamanlı Karakter</strong> (Mert, Selin, Can, Deniz)</td>
+            <td>Tek veya kısıtlı 1-2 ses</td>
           </tr>
           <tr>
-            <td><strong>Tokenizer Hızı</strong></td>
-            <td>Ultra düşük <strong>7.5 Hz</strong> kare hızı</td>
-            <td>50 - 100 Hz (yüksek bellek yükü)</td>
+            <td><strong>Duygu & İfade Desteği</strong></td>
+            <td><code>[gülerek]</code>, <code>[şaşkınlıkla]</code>, <code>[düşünceli]</code>, <code>[heyecanlı]</code></td>
+            <td>Düz, tekdüze tonlama</td>
           </tr>
           <tr>
-            <td><strong>Doğal İfade</strong></td>
-            <td>Gülme, iç çekme, şarkı söyleme, spontane duygu</td>
-            <td>Robotik veya yapay tonlama</td>
+            <td><strong>Çalışma Modu</strong></td>
+            <td><strong>Sıfır Kurulum Web Motoru</strong> + <strong>Harici GPU API</strong></td>
+            <td>Sunucuya bağımlı</td>
           </tr>
           <tr>
-            <td><strong>ASR (Konuşma Tanıma)</strong></td>
-            <td>60 dk tek parça, konuşmacı ayrıştırma (diarization)</td>
-            <td>Kısa parçalara bölme zorunluluğu</td>
+            <td><strong>Arka Plan Müziği</strong></td>
+            <td>Dahili Lo-Fi, Chillhop, Jazz ve Ambient mikseri</td>
+            <td>Yok veya ek düzenleme gerektirir</td>
+          </tr>
+          <tr>
+            <td><strong>Görsel & Senkronizasyon</strong></td>
+            <td>Anlık konuşmacı transkripti + Dalga biçimi (Waveform)</td>
+            <td>Yalnızca düz ses oynatıcı</td>
+          </tr>
+          <tr>
+            <td><strong>Dışa Aktarma</strong></td>
+            <td>Ses (.wav/.mp3), Altyazı (.srt) ve Transkript (.txt)</td>
+            <td>Sadece ham ses</td>
           </tr>
         </tbody>
       </table>
     </section>
 
-    <!-- 3. Model Mimarisi -->
-    <section id="mimari">
-      <h2><i class="fa-solid fa-diagram-project" style="color:var(--accent);"></i> 3. Model Mimarisi</h2>
-      <p>VibeVoice mimarisi üç ana temel bileşenden meydana gelir:</p>
+    <!-- 3. Çift Motorlu Mimari -->
+    <section id="cift-motor">
+      <h2><i class="fa-solid fa-microchip" style="color:var(--accent);"></i> 3. Çift Motorlu Mimari (Dual-Engine)</h2>
+      <p>PodcastLab, kullanıcıya maksimum esneklik ve kesintisiz deneyim sunmak için iki seviyeli bir motor mimarisiyle tasarlanmıştır:</p>
+      
+      <div class="feature-grid">
+        <div class="feature-card">
+          <h4><i class="fa-solid fa-bolt" style="color:#10b981;"></i> 1. Dahili Web Motoru (WebSpeech API)</h4>
+          <p>
+            Herhangi bir kurulum veya harici GPU sunucusu gerektirmez. Doğrudan tarayıcınızın donanım ivmeli Türkçe ses motorlarını kullanarak sıfır gecikmeyle (anında) çok konuşmacılı seslendirme yapar.
+          </p>
+        </div>
+        <div class="feature-card">
+          <h4><i class="fa-solid fa-server" style="color:#60a5fa;"></i> 2. VibeVoice GPU Motoru (FastAPI)</h4>
+          <p>
+            Kendi yerel GPU bilgisayarınızda veya bulut sunucunuzda çalışan <code>server.py</code> arka ucuna bağlanır. İleri düzey difüzyon tabanlı akustik modellemeyle stüdyo çıktısı üretir.
+          </p>
+        </div>
+      </div>
+
+      <div class="callout callout-success">
+        <i class="fa-solid fa-shield-check"></i>
+        <strong>Pop-Up'sız Akıcı Geçiş (Seamless Fallback):</strong> Eğer harici GPU sunucunuz kapalıysa veya ulaşılamaz durumdaysa, uygulama ekrana rahatsız edici hata pencereleri çıkarmak yerine otomatik ve sessizce Dahili Web Motoru'na geçerek podcast'inizi kesintisiz olarak oynatır.
+      </div>
+    </section>
+
+    <!-- 4. Stüdyo Kullanımı -->
+    <section id="studio-kullanimi">
+      <h2><i class="fa-solid fa-sliders" style="color:var(--accent);"></i> 4. PodcastLab Stüdyosu Nasıl Kullanılır?</h2>
+      
+      <h3>1. Senaryo Formatı</h3>
+      <p>Senaryo alanına konuşmacı adını köşeli parantez içinde belirterek diyaloglarınızı yazın:</p>
+      <pre><code>[Mert]: Herkese merhaba! PodcastLab stüdyosuna hoş geldiniz.
+[Selin]: [heyecanlı] Selam Mert! Bugün yapay zeka ile ses üretimini konuşacağız.
+[Can]: [gülerek] Evet, artık tekdüze robotik seslerin yerini canlı sohbetler aldı!
+[Deniz]: [düşünceli] Özellikle farklı tonlamaların tek oturumda birleşmesi harika.</code></pre>
+
+      <h3>2. Hazır Şablonlar</h3>
+      <p>Arayüzdeki <strong>"Yapay Zeka Sohbeti"</strong>, <strong>"Haftalık Teknoloji"</strong> veya <strong>"Girişimcilik"</strong> butonlarına tıklayarak örnek diyalogları anında yükleyebilirsiniz.</p>
+
+      <h3>3. Arka Plan Ambiyansı</h3>
+      <p>Diyaloğunuza uygun arka plan müziğini (Lo-Fi Beats, Chillhop, Jazz Lounge veya Ambient) seçin ve ses seviyesi sürgüsüyle dengeleyin.</p>
+    </section>
+
+    <!-- 5. Türkçe Ses Motorları & Kurulum -->
+    <section id="ses-motorlari">
+      <h2><i class="fa-solid fa-volume-high" style="color:var(--accent);"></i> 5. Türkçe Ses Motorları & Sistem Kurulumu</h2>
+      <p>PodcastLab, işletim sisteminizde ve tarayıcınızda bulunan Türkçe sesleri otomatik olarak tarar. En yüksek gerçekçilik için önerilen sistem ayarları:</p>
+
+      <h3>Windows 11 / 10 Kullanıcıları İçin (Microsoft Doğal Sesleri):</h3>
       <ol>
-        <li>
-          <strong>Sürekli Konuşma Tokenizer'ı (7.5 Hz):</strong>
-          Akustik ve semantik bilgiyi temsil etmek için yalnızca 7.5 Hz kare hızı kullanır. Bu sayede bellek tüketimi 10 kata kadar azalır ve uzun dizilerin modellenmesi mümkün hale gelir.
-        </li>
-        <li>
-          <strong>Büyük Dil Modeli (LLM Omurgası):</strong>
-          Diyalog akışını, konuşmacı sıralarını, tonlama nüanslarını ve metnin genel bağlamını kavramak için bir LLM kullanılır.
-        </li>
-        <li>
-          <strong>Next-Token Difüzyon Başlığı (Diffusion Head):</strong>
-          LLM tarafından üretilen gizli temsilleri yüksek çözünürlüklü akustik dalga biçimlerine dönüştürerek ses kalitesini ve tını doğallığını sağlar.
-        </li>
+        <li>Windows <strong>Ayarlar</strong> (Settings) uygulamasını açın (<code>Win + I</code>).</li>
+        <li><strong>Zaman ve Dil</strong> (Time & Language) &gt; <strong>Konuşma</strong> (Speech) sekmesine gidin.</li>
+        <li><strong>"Ses ekle"</strong> butonuna tıklayın ve <strong>Türkçe (Türkiye)</strong> paketini aratıp yükleyin.</li>
+        <li>Bu işlem ile <em>Microsoft Ahmet</em> ve <em>Microsoft Emel</em> doğal ses profilleri sisteminize eklenir.</li>
       </ol>
+
+      <h3>Apple macOS & iOS Kullanıcıları İçin:</h3>
+      <p>Sistem Ayarları &gt; Erişilebilirlik &gt; Seslendirme &gt; Sesler menüsünden <strong>Yelda (Gelişmiş)</strong> veya <strong>Tolga (Gelişmiş)</strong> profillerini indirebilirsiniz.</p>
     </section>
 
-    <!-- 4. Sistem Gereksinimleri -->
-    <section id="gereksinimler">
-      <h2><i class="fa-solid fa-microchip" style="color:var(--accent);"></i> 4. Sistem ve Donanım Gereksinimleri</h2>
-      <p>VibeVoice modelini kendi sunucunuzda veya yerel bilgisayarınızda çalıştırmak için önerilen gereksinimler:</p>
-      <ul>
-        <li><strong>İşletim Sistemi:</strong> Linux (Ubuntu 22.04+ önerilir) veya Windows 11 (WSL2 önerilir).</li>
-        <li><strong>Python Sürümü:</strong> Python 3.10 veya 3.11.</li>
-        <li><strong>Grafik Kartı (GPU):</strong> 
-          <ul>
-            <li><code>VibeVoice-Realtime-0.5B</code> için: En az <strong>8 GB VRAM</strong> (NVIDIA RTX 3060 veya üzeri).</li>
-            <li><code>VibeVoice-1.5B</code> ve uzun üretimler için: En az <strong>16 GB - 24 GB VRAM</strong> (NVIDIA RTX 3090, 4090 veya A10G/A100).</li>
-          </ul>
-        </li>
-        <li><strong>Bellek (RAM):</strong> Minimum 16 GB (Önerilen: 32 GB RAM).</li>
-        <li><strong>Disk Alanı:</strong> Model ağırlıkları ve ses dosyaları için en az 20 GB boş alan.</li>
-      </ul>
+    <!-- 6. Edge & Chrome Karakter Ayrıştırması -->
+    <section id="tarayici-ayrimi">
+      <h2><i class="fa-solid fa-headphones" style="color:var(--accent);"></i> 6. Edge & Chrome Karakter Ayrıştırması</h2>
+      <p>Farklı tarayıcılar Türkçe konuşma motorlarını farklı şekillerde sunar. PodcastLab her iki tarayıcı için de özel optimizasyonlara sahiptir:</p>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <h4><i class="fa-brands fa-edge" style="color:#0078d7;"></i> Microsoft Edge (Önerilen)</h4>
+          <p>
+            Edge, Microsoft'un bulut tabanlı <strong>Natural Neural</strong> seslerini (Ahmet & Emel) yerel olarak destekler. Karakterler en üst düzey akıcılık ve doğal nefes vurgularıyla konuşur.
+          </p>
+        </div>
+        <div class="feature-card">
+          <h4><i class="fa-brands fa-chrome" style="color:#ea4335;"></i> Google Chrome (Genişletilmiş Perde)</h4>
+          <p>
+            Chrome standart olarak tek bir <em>Google Türkçe</em> sesi sağlar. PodcastLab, 4 karakteri birbirinden net bir şekilde ayırmak için genişletilmiş akustik perde (pitch) katsayıları uygular:
+            <br>• <strong>Mert:</strong> 0.52 (Derin Bas)
+            <br>• <strong>Selin:</strong> 1.62 (Canlı Soprano)
+            <br>• <strong>Can:</strong> 1.16 (Sıcak Tenor)
+            <br>• <strong>Deniz:</strong> 0.82 (Dengeli Nötr)
+          </p>
+        </div>
+      </div>
     </section>
 
-    <!-- 5. Kurulum -->
-    <section id="kurulum">
-      <h2><i class="fa-solid fa-terminal" style="color:var(--accent);"></i> 5. Adım Adım Kurulum</h2>
-      
-      <h3>1. Depoyu Klonlayın ve Sanal Ortam Oluşturun</h3>
-      <pre><code># Depoyu klonlayın
-git clone https://github.com/microsoft/VibeVoice.git
-cd VibeVoice
+    <!-- 7. GPU Kurulumu -->
+    <section id="gpu-kurulum">
+      <h2><i class="fa-solid fa-server" style="color:var(--accent);"></i> 7. Yerel / GPU Sunucusu Kurulumu (`server.py`)</h2>
+      <p>Kendi ekran kartınızda (NVIDIA CUDA) veya uzak GPU sunucunuzda PodcastLab API'sini çalıştırmak için:</p>
 
-# Python sanal ortamı oluşturun ve etkinleştirin
-python -m venv venv
-# Linux / macOS:
-source venv/bin/activate
-# Windows:
-.\venv\Scripts\Activate.ps1</code></pre>
+      <h3>1. Depoyu Klonlayın ve Bağımlılıkları Yükleyin:</h3>
+      <pre><code># Gerekli kütüphaneleri yükleyin
+pip install fastapi uvicorn torch transformers soundfile edge-tts pydantic</code></pre>
 
-      <h3>2. PyTorch ve Temel Kütüphaneleri Yükleyin</h3>
-      <pre><code># CUDA destekli PyTorch yükleyin (örnek: CUDA 12.1)
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-
-# Gerekli bağımlılıkları yükleyin
-pip install transformers diffusers accelerate soundfile librosa</code></pre>
-
-      <h3>3. Hugging Face Girişi Yapın</h3>
-      <pre><code>pip install huggingface_hub
-huggingface-cli login</code></pre>
+      <h3>2. API Sunucusunu Başlatın:</h3>
+      <pre><code># Sunucuyu başlatma (Varsayılan port: 8000)
+python server.py</code></pre>
+      <p>Sunucu açıldığında <code>http://0.0.0.0:8000</code> adresinde dinlemeye başlar ve Swagger arayüzü <code>/docs</code> yolunda erişilebilir olur.</p>
     </section>
 
-    <!-- 6. TTS Kullanımı -->
-    <section id="tts-kullanimi">
-      <h2><i class="fa-solid fa-volume-high" style="color:var(--accent);"></i> 6. Metinden Sese (TTS) Modelinin Kullanımı</h2>
-      <p>Aşağıdaki Python betiği, birden fazla konuşmacının yer aldığı bir senaryoyu VibeVoice ile seslendirmeyi örnekler:</p>
-
-      <pre><code>import torch
-import soundfile as sf
-from transformers import AutoModelForCausalLM, AutoTokenizer
-
-model_id = "microsoft/VibeVoice-1.5B"
-
-# Model ve Tokenizer'ı Yükleme
-print("Model yükleniyor...")
-tokenizer = AutoTokenizer.from_pretrained(model_id)
-model = AutoModelForCausalLM.from_pretrained(
-    model_id,
-    torch_dtype=torch.float16,
-    device_map="auto"
-)
-
-# Çok Konuşmacılı Diyalog Metni
-dialogue_text = """
-[Konuşmacı 1]: Merhaba, bugünkü yapay zeka ve ses teknolojileri yayınımıza hoş geldiniz!
-[Konuşmacı 2]: Teşekkürler, bugün Microsoft VibeVoice modelinin yeniliklerini inceleyeceğiz.
-[Konuşmacı 1]: Gerçekten inanılmaz, özellikle uzun süreli konuşmalarda konuşmacı kimliğini hiç kaybetmiyor.
-"""
-
-# Metni tokenize etme ve ses üretimi
-inputs = tokenizer(dialogue_text, return_tensors="pt").to("cuda")
-
-with torch.no_grad():
-    output_audio = model.generate(
-        **inputs,
-        max_new_tokens=4096,
-        temperature=0.7,
-        top_p=0.9
-    )
-
-# Üretilen sesi kaydetme
-sf.write("cikti_podcast.wav", output_audio.cpu().numpy(), samplerate=24000)
-print("Ses dosyası başarıyla kaydedildi: cikti_podcast.wav")</code></pre>
-    </section>
-
-    <!-- 7. ASR Kullanımı -->
-    <section id="asr-kullanimi">
-      <h2><i class="fa-solid fa-headphones" style="color:var(--accent);"></i> 7. Ses Tanıma ve Transkripsiyon (VibeVoice-ASR)</h2>
+    <!-- 8. HTTPS & Tünelleme -->
+    <section id="tunneling-rehberi">
+      <h2><i class="fa-solid fa-shield-halved" style="color:var(--accent);"></i> 8. HTTPS & Tünelleme Rehberi (Mixed Content Çözümü)</h2>
       <p>
-        VibeVoice-ASR, 60 dakikaya kadar kesintisiz ses dosyalarını tek seferde metne dönüştürür. Çıktıda konuşmacı kimliği (Diarization), konuşma zaman aralığı (Timestamp) ve söylenen sözler yer alır.
+        GitHub Pages sayfanız güvenli <strong>HTTPS</strong> (<code>https://mserman90.github.io</code>) protokolüyle çalıştığı için, tarayıcılar güvenlik nedeniyle şifrelenmemiş yerel <code>http://localhost:8000</code> adresine doğrudan istek gönderilmesini engelleyebilir (<em>Mixed Content / Failed to fetch</em>).
       </p>
+      <p>GPU sunucunuzu güvenli bir HTTPS adresine dönüştürmek için aşağıdaki iki yöntemden birini kullanabilirsiniz:</p>
 
-      <pre><code>from transformers import pipeline
+      <h3>Yöntem A: Cloudflare Tunnel (Tamamen Ücretsiz & Hızlı)</h3>
+      <pre><code># Cloudflare Tunnel başlatma
+cloudflared tunnel --url http://localhost:8000</code></pre>
+      <p>Terminalde beliren <code>https://ornek-ad.trycloudflare.com</code> adresini kopyalayıp stüdyodaki <strong>GPU Uç Noktası</strong> alanına yapıştırın.</p>
 
-# ASR işlem hattı oluşturma
-asr_pipe = pipeline(
-    "automatic-speech-recognition",
-    model="microsoft/VibeVoice-ASR",
-    device="cuda:0"
-)
-
-# Uzun ses dosyasını transkribe etme
-result = asr_pipe("ornek_toplanti.mp3", return_timestamps=True)
-
-# Sonuçları ekrana yazdırma
-for chunk in result["chunks"]:
-    speaker = chunk.get("speaker", "Bilinmeyen")
-    start, end = chunk["timestamp"]
-    text = chunk["text"]
-    print(f"[{start:.2f}s -> {end:.2f}s] {speaker}: {text}")</code></pre>
+      <h3>Yöntem B: ngrok</h3>
+      <pre><code># ngrok ile port 8000'i dışa açma
+ngrok http 8000</code></pre>
+      <p>Oluşan <code>https://xyz.ngrok-free.app</code> adresini stüdyoya girerek <strong>"Sına & Bağlan"</strong> butonuna basın.</p>
     </section>
 
-    <!-- 8. Parametreler ve İpuçları -->
-    <section id="ipucu-parametreler">
-      <h2><i class="fa-solid fa-sliders" style="color:var(--accent);"></i> 8. Parametreler ve En İyi Uygulama İpuçları</h2>
+    <!-- 9. Dışa Aktarma -->
+    <section id="disa-aktar">
+      <h2><i class="fa-solid fa-file-export" style="color:var(--accent);"></i> 9. Transkript ve SRT İndirme</h2>
+      <p>PodcastLab oturumunuz tamamlandıktan sonra prodüksiyonunuzu farklı formatlarda dışa aktarabilirsiniz:</p>
       <ul>
-        <li>
-          <strong>Duygu ve Vurgu Belirleme:</strong> Metin içine <code>[gülerek]</code>, <code>[şaşkınlıkla]</code>, <code>[şarkı söyler gibi]</code> etiketleri ekleyerek modelin duygu durumunu yönlendirebilirsiniz.
-        </li>
-        <li>
-          <strong>Temperature (Sıcaklık):</strong> 
-          <ul>
-            <li><code>0.3 - 0.5</code>: Haber spikeri tarzı, net ve resmi okumalar.</li>
-            <li><code>0.7 - 0.8</code>: Doğal podcast, spontane sohbet ve duygusal iniş çıkışlar.</li>
-          </ul>
-        </li>
-        <li>
-          <strong>Bellek Optimizasyonu (KV-Cache & FlashAttention):</strong>
-          Uzun oturumlarda (30+ dakika) GPU belleğini verimli kullanmak için <code>torch.backends.cuda.enable_flash_sdp(True)</code> veya <code>vLLM</code> arka ucunu tercih edin.
-        </li>
+        <li><strong>Metin Transkripti (.txt):</strong> Tüm konuşmacıların söylediklerini sıralı ve temiz bir metin dosyası olarak kaydeder.</li>
+        <li><strong>Altyazı Dosyası (.srt):</strong> YouTube, Premiere, DaVinci Resolve veya video oynatıcılar için zaman damgalı senkron altyazı üretir.</li>
+        <li><strong>Örnek Ses (.mp3 / .wav):</strong> Üretilen ses kaydını bilgisayarınıza indirir.</li>
       </ul>
     </section>
 
-    <!-- 9. Sıkça Sorulan Sorular -->
+    <!-- 10. Sıkça Sorulan Sorular -->
     <section id="faq">
-      <h2><i class="fa-solid fa-circle-question" style="color:var(--accent);"></i> 9. Sıkça Sorulan Sorular (FAQ)</h2>
+      <h2><i class="fa-solid fa-circle-question" style="color:var(--accent);"></i> 10. Sıkça Sorulan Sorular (SSS)</h2>
       
-      <h3>VibeVoice Türkçe dilini ve konuşma seslerini nasıl üretir?</h3>
+      <h3>"GPU Sunucusuna Bağlanılamadı (Failed to fetch)" uyarısı ne anlama gelir?</h3>
       <p>
-        Uygulama iki seviyeli bir Türkçe ses motoru mimarisine sahiptir:
-        <ol>
-          <li><strong>Tarayıcı İçi Doğal Türkçe Ses Motoru (WebSpeech API + Web Audio):</strong> Herhangi bir harici sunucuya veya GPU'ya ihtiyaç duymadan, sisteminizdeki yerel Türkçe ses motorlarını (Microsoft Ahmet/Emel, Apple Tolga/Yelda veya Google Türkçe) kullanarak çok konuşmacılı podcast'leri anında ve sıfır gecikmeyle seslendirir. Arka plan müziği mikseriyle birleştirir ve transkripti gerçek zamanlı senkronize eder.</li>
-          <li><strong>VibeVoice GPU & Multilingual Model:</strong> VibeVoice, çok dilli token adaptasyonuyla eğitilmiştir. Kendi GPU sunucunuzda çalışan <code>server.py</code> (FastAPI) arka ucu üzerinden stüdyo kalitesinde Türkçe ses sentezi gerçekleştirebilirsiniz.</li>
-        </ol>
+        Bu uyarı, arka planda <code>python server.py</code> sunucusunun çalışmadığını veya HTTPS/HTTP karışık içerik engeline takıldığını gösterir. PodcastLab'in güncel sürümünde bu durum otomatik olarak algılanır ve hiçbir hata penceresi göstermeden <strong>Dahili Türkçe Web Motoru</strong> devreye girer.
       </p>
 
-      <h3>GitHub Pages üzerinde canlı model çalıştırabilir miyim?</h3>
+      <h3>Arka plandaki vınlama veya parazit sesi nasıl düzeltildi?</h3>
       <p>
-        Hayır. GitHub Pages yalnızca statik web sayfalarını (HTML/JS) barındırır. Modeli çalıştırmak için harici bir GPU sunucusu (Hugging Face Spaces, RunPod, AWS EC2 veya yerel bilgisayarınız) gereklidir. Bu sayfadaki demo, modelin önceden ürettiği ses kayıtlarını oynatan bir vitrindir.
+        Eski sürümde Web Audio API sentetik osilatörleri (sine/sawtooth sinyalleri) arka planda sürekli çalışıyordu. Bu osilatörler tamamen kaldırılarak sadece temiz, yüksek kaliteli Lo-Fi ve Chillhop ambiyans akışları entegre edildi.
       </p>
 
-      <h3>Ses gecikmesi (latency) ne kadardır?</h3>
+      <h3>Sistemdeki Türkçe sesleri özelleştirebilir miyim?</h3>
       <p>
-        <code>VibeVoice-Realtime-0.5B</code> modeli akışlı (streaming) üretim için optimize edilmiştir ve ilk ses paketi gecikmesi 200-300 ms civarındadır.
+        Evet! Stüdyodaki <strong>"Ayarlar"</strong> butonuna tıklayarak Mert, Selin, Can ve Deniz karakterlerine sisteminizde yüklü olan istediğiniz Türkçe ses profilini, ses perdesini ve konuşma hızını ayrı ayrı atayabilirsiniz.
       </p>
     </section>
 
     <footer>
-      <p>&copy; 2026 VibeVoice Topluluk Rehberi · Microsoft Research VibeVoice Açık Kaynak Projesi</p>
-      <p><a href="index.html" style="color:var(--accent); text-decoration:none;">← Canlı Demo Sayfasına Geri Dön</a></p>
+      <p>&copy; 2026 PodcastLab · Microsoft Research VibeVoice Açık Kaynak Projesi Topluluk Geliştirmesi</p>
+      <p><a href="index.html" style="color:var(--accent); text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> PodcastLab Canlı Stüdyosuna Geri Dön</a></p>
     </footer>
   </main>
 </div>

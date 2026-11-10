@@ -1,189 +1,142 @@
-# Microsoft VibeVoice - Türkçe Kullanım Kılavuzu ve Geliştirici Rehberi
+# PodcastLab: Kullanım Kılavuzu & Geliştirici Rehberi
 
-Bu belge, Microsoft Research tarafından geliştirilen açık kaynaklı **VibeVoice** ses yapay zekası (Voice AI) çatı ve modellerinin Türkçe kullanım rehberidir.
+Bu belge, Microsoft Research tarafından geliştirilen **VibeVoice** ses yapay zekası (Voice AI) mimarisini temel alan, çok konuşmacılı Türkçe podcast üretim stüdyosu **PodcastLab** için kapsamlı kullanım ve geliştirici rehberidir.
 
 ---
 
 ## 📑 İçindekiler
-1. [VibeVoice Nedir?](#1-vibevoice-nedir)
+1. [PodcastLab Nedir?](#1-podcastlab-nedir)
 2. [Öne Çıkan Yetenekler](#2-öne-çıkan-yetenekler)
-3. [Model Mimarisi](#3-model-mimarisi)
-4. [Sistem ve Donanım Gereksinimleri](#4-sistem-ve-donanım-gereksinimleri)
-5. [Kurulum Adımları](#5-kurulum-adımları)
-6. [Metinden Sese (TTS) Kullanımı](#6-metinden-sese-tts-kullanımı)
-7. [Çok Konuşmacılı Podcast Üretimi](#7-çok-konuşmacılı-podcast-üretimi)
-8. [Ses Tanıma ve Transkripsiyon (ASR)](#8-ses-tanıma-ve-transkripsiyon-asr)
-9. [Parametreler ve İpuçları](#9-parametreler-ve-ipuçları)
+3. [Çift Motorlu Mimari (Dual-Engine)](#3-çift-motorlu-mimari-dual-engine)
+4. [PodcastLab Stüdyosu Nasıl Kullanılır?](#4-podcastlab-stüdyosu-nasıl-kullanılır)
+5. [Türkçe Ses Motorları & Sistem Kurulumu](#5-türkçe-ses-motorları--sistem-kurulumu)
+6. [Tarayıcı Optimizasyonları (Edge & Chrome)](#6-tarayıcı-optimizasyonları-edge--chrome)
+7. [Yerel / GPU Sunucusu Kurulumu (`server.py`)](#7-yerel--gpu-sunucusu-kurulumu-serverpy)
+8. [HTTPS & Tünelleme Rehberi (Cloudflare / ngrok)](#8-https--tünelleme-rehberi-cloudflare--ngrok)
+9. [Transkript ve Altyazı Dışa Aktarma](#9-transkript-ve-altyazı-dışa-aktarma)
 10. [Sıkça Sorulan Sorular (SSS)](#10-sıkça-sorulan-sorular-sss)
 
 ---
 
-## 1. VibeVoice Nedir?
-**VibeVoice**, metin girdilerinden uzun soluklu, yüksek kaliteli, duygusal ve çok konuşmacılı sesler üretebilen açık kaynaklı bir ses model ailesidir. Geleneksel TTS modellerinin aksine:
-* **90 dakikaya kadar** kesintisiz tek parça ses üretebilir.
-* **4 farklı konuşmacıyı** aynı oturumda, konuşmacı kimliğini ve ses tonunu bozmadan seslendirebilir.
-* Konuşmacıların sıra alma (turn-taking) dinamiklerini, gülme, nefes alma ve spontane tonlamalarını doğal biçimde yansıtır.
+## 1. PodcastLab Nedir?
+**PodcastLab**, metin girdilerini profesyonel radyo ve podcast kalitesinde, çok konuşmacılı, duygu vurgulu ve arka plan müzikli bir ses prodüksiyonuna dönüştüren modern bir yapay zeka stüdyosudur.
+
+* **4 Farklı Karakter:** Mert (Derin Bas), Selin (Canlı Soprano), Can (Sıcak Tenor) ve Deniz (Dengeli Nötr).
+* **Duygu & İfade Etiketleri:** `[gülerek]`, `[şaşkınlıkla]`, `[şarkı söyler gibi]`, `[düşünceli]`, `[heyecanlı]` gibi duygu geçişleri.
+* **Arka Plan Müzik Mikseri:** Lo-Fi Beats, Chillhop, Jazz Lounge ve Ambient müzik akışları.
+* **Senkron Transkript ve Dalga Biçimi:** Konuşulan cümlenin canlı sarı vurgulanması ve gerçek zamanlı frekans görselleştirmesi.
 
 ---
 
 ## 2. Öne Çıkan Yetenekler
-| Özellik | VibeVoice | Geleneksel TTS |
+| Özellik | PodcastLab Stüdyo | Geleneksel TTS Araçları |
 | :--- | :--- | :--- |
-| **Maksimum Üretim Süresi** | 90 Dakika | 15 - 60 Saniye |
-| **Eşzamanlı Konuşmacı** | 4 Farklı Karakter | 1 - 2 Karakter |
-| **Kare Hızı (Tokenizer)** | **7.5 Hz** (Ultra düşük) | 50 - 100 Hz |
-| **Duygusal İfade** | Spontane gülme, tonlama, şarkı | Düz/robotik okuma |
-| **ASR (Konuşma Tanıma)** | 60 dk tek parça + Diarization | Kısa parçalama gerektirir |
+| **Konuşmacı Sayısı** | **4 Eşzamanlı Karakter** (Mert, Selin, Can, Deniz) | Tek veya kısıtlı 1-2 ses |
+| **Duygusal İfade** | `[gülerek]`, `[şaşkınlıkla]`, `[düşünceli]` vb. | Düz, robotik tonlama |
+| **Çalışma Modu** | **Sıfır Kurulum Web Motoru** + **Harici GPU API** | Sadece sunucu bağımlı |
+| **Arka Plan Müziği** | Dahili Lo-Fi, Chillhop, Jazz mikseri | Yok veya harici yazılım gerektirir |
+| **Dışa Aktarma** | Ses (.wav/.mp3), Altyazı (.srt) ve Transkript (.txt) | Yalnızca ham ses |
 
 ---
 
-## 3. Model Mimarisi
-VibeVoice üç temel ayaktan oluşur:
-1. **7.5 Hz Sürekli Konuşma Tokenizer'ı:** Akustik ve anlamsal bilgiyi çok düşük bir kare hızıyla (7.5 Hz) sıkıştırarak bellek tüketimini ciddi oranda düşürür.
-2. **Büyük Dil Modeli (LLM):** Diyaloğun bağlamını, kimin ne zaman konuştuğunu ve hangi duyguyla cevap verdiğini anlamlandırır.
-3. **Next-Token Difüzyon Başlığı (Diffusion Head):** LLM'den gelen gizli temsilleri stüdyo kalitesinde gerçekçi ses dalgalarına dönüştürür.
+## 3. Çift Motorlu Mimari (Dual-Engine)
+1. **Dahili Web Motoru (WebSpeech API + Web Audio):** Herhangi bir kurulum veya GPU sunucusuna ihtiyaç duymadan, doğrudan tarayıcınızın donanım ivmeli Türkçe ses motorlarını kullanarak sıfır gecikmeyle çalışır.
+2. **VibeVoice GPU Sunucu Entegrasyonu (`server.py`):** Kendi GPU makinenizde veya bulutta çalışan FastAPI arka ucu üzerinden stüdyo kalitesinde difüzyon tabanlı üretim sağlar.
+
+> **💡 Pop-Up'sız Akıcı Geçiş (Seamless Fallback):** Eğer GPU sunucusu kapalıysa veya ulaşılamaz durumdaysa, uygulama ekrana rahatsız edici hata pencereleri çıkarmak yerine otomatik ve sessizce Dahili Web Motoru'na geçerek podcast'inizi kesintisiz olarak oynatır.
 
 ---
 
-## 4. Sistem ve Donanım Gereksinimleri
-* **İşletim Sistemi:** Linux (Ubuntu 20.04/22.04) veya Windows 11 (WSL2 önerilir)
-* **Python:** 3.10 veya 3.11
-* **GPU (Ekran Kartı):**
-  * `VibeVoice-Realtime-0.5B` için: Minimum **8 GB VRAM** (RTX 3060, RTX 4060 vb.)
-  * `VibeVoice-1.5B` için: Minimum **16 - 24 GB VRAM** (RTX 3090, RTX 4090, A10G vb.)
-* **RAM:** 16 GB veya üzeri (Önerilen: 32 GB)
+## 4. PodcastLab Stüdyosu Nasıl Kullanılır?
+
+### Senaryo Formatı
+Senaryo kutusuna konuşmacı isimlerini köşeli parantez içinde belirterek diyaloglarınızı yazın:
+
+```text
+[Mert]: Herkese merhaba! PodcastLab stüdyosuna hoş geldiniz.
+[Selin]: [heyecanlı] Selam Mert! Bugün ses yapay zekasındaki son gelişmeleri konuşuyoruz.
+[Can]: [gülerek] Evet, artık robotik sesler geride kaldı; doğal sohbetler yapabiliyoruz!
+[Deniz]: [düşünceli] Özellikle farklı tonlamaların tek oturumda birleşmesi harika.
+```
 
 ---
 
-## 5. Kurulum Adımları
+## 5. Türkçe Ses Motorları & Sistem Kurulumu
 
-### 1. Depoyu klonlayın ve sanal ortam oluşturun:
+### Windows 11 / 10 Kullanıcıları İçin (Microsoft Ahmet & Emel):
+1. Windows **Ayarlar** (Settings) uygulamasını açın (`Win + I`).
+2. **Zaman ve Dil** > **Konuşma** sekmesine gidin.
+3. **"Ses ekle"** butonuna tıklayın ve **Türkçe (Türkiye)** paketini yükleyin.
+4. Bu işlem ile sisteminize doğal *Microsoft Ahmet* ve *Microsoft Emel* sesleri dahil edilir.
+
+### Apple macOS & iOS Kullanıcıları İçin:
+Sistem Ayarları > Erişilebilirlik > Seslendirme > Sesler menüsünden **Yelda (Gelişmiş)** veya **Tolga (Gelişmiş)** profillerini indirebilirsiniz.
+
+---
+
+## 6. Tarayıcı Optimizasyonları (Edge & Chrome)
+
+* **Microsoft Edge (Önerilen):** Microsoft'un bulut tabanlı doğal nöral seslerini (*Microsoft Ahmet Online*, *Microsoft Emel Online*) yerel olarak destekler. Karakterler en üst düzey akıcılık ve doğal nefes vurgularıyla konuşur.
+* **Google Chrome (Genişletilmiş Perde):** Chrome standart olarak tek bir *Google Türkçe* sesi sağlar. PodcastLab, 4 karakteri birbirinden net bir şekilde ayırmak için genişletilmiş akustik perde (pitch) katsayıları uygular:
+  * **Mert:** 0.52 (Derin Bas)
+  * **Selin:** 1.62 (Canlı Soprano)
+  * **Can:** 1.16 (Sıcak Tenor)
+  * **Deniz:** 0.82 (Dengeli Nötr)
+
+---
+
+## 7. Yerel / GPU Sunucusu Kurulumu (`server.py`)
+
+Kendi bilgisayarınızdaki ekran kartını (CUDA) veya uzak bir GPU sunucusunu kullanmak için:
+
 ```bash
-git clone https://github.com/microsoft/VibeVoice.git
-cd VibeVoice
+# 1. Gerekli kütüphaneleri yükleyin
+pip install fastapi uvicorn torch transformers soundfile edge-tts pydantic
 
-python -m venv venv
-# Linux / macOS:
-source venv/bin/activate
-# Windows:
-.\venv\Scripts\Activate.ps1
-```
-
-### 2. Bağımlılıkları yükleyin:
-```bash
-# CUDA 12.1 destekli PyTorch
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-
-# Ek kütüphaneler
-pip install transformers diffusers accelerate soundfile librosa huggingface_hub
-```
-
----
-
-## 6. Metinden Sese (TTS) Kullanımı
-
-```python
-import torch
-import soundfile as sf
-from transformers import AutoModelForCausalLM, AutoTokenizer
-
-model_id = "microsoft/VibeVoice-1.5B"
-
-tokenizer = AutoTokenizer.from_pretrained(model_id)
-model = AutoModelForCausalLM.from_pretrained(
-    model_id,
-    torch_dtype=torch.float16,
-    device_map="auto"
-)
-
-text = "Merhaba! VibeVoice yapay zeka ses sentezleme teknolojisi ile oluşturulmuş bir örnektir."
-inputs = tokenizer(text, return_tensors="pt").to("cuda")
-
-with torch.no_grad():
-    audio = model.generate(**inputs, max_new_tokens=1024)
-
-sf.write("cikti.wav", audio.cpu().numpy(), 24000)
-```
-
----
-
-## 7. Çok Konuşmacılı Podcast Üretimi
-
-VibeVoice etiketli diyalog metinlerini doğrudan destekler:
-
-```python
-dialogue = """
-[Konuşmacı 1]: Bugün yapay zeka modellerinin ses sentezindeki yeni sınırlarını konuşuyoruz.
-[Konuşmacı 2]: Evet, özellikle birden fazla konuşmacının aynı anda sohbet ettiği podcast formatları inanılmaz bir seviyeye ulaştı.
-[Konuşmacı 1]: [gülerek] Kesinlikle! Artık robotik sesler geride kaldı.
-"""
-
-inputs = tokenizer(dialogue, return_tensors="pt").to("cuda")
-with torch.no_grad():
-    podcast_audio = model.generate(**inputs, max_new_tokens=4096, temperature=0.7)
-
-sf.write("podcast.wav", podcast_audio.cpu().numpy(), 24000)
-```
-
----
-
-## 8. Ses Tanıma ve Transkripsiyon (ASR)
-
-VibeVoice-ASR ile ses dosyasındaki konuşmacıları ve zaman damgalarını ayrıştırarak metne dökebilirsiniz:
-
-```python
-from transformers import pipeline
-
-asr_pipeline = pipeline("automatic-speech-recognition", model="microsoft/VibeVoice-ASR", device="cuda:0")
-transcription = asr_pipeline("kayit.mp3", return_timestamps=True)
-
-for segment in transcription["chunks"]:
-    spk = segment.get("speaker", "Bilinmeyen")
-    start, end = segment["timestamp"]
-    text = segment["text"]
-    print(f"[{start:.2f}s - {end:.2f}s] {spk}: {text}")
-```
-
----
-
-## 9. Parametreler ve İpuçları
-* **Duygu Etiketleri:** Metin aralarına `[gülerek]`, `[şaşkınlıkla]`, `[düşünceli]` gibi parantez içi ifadeler ekleyerek tonlama zenginliği sağlayabilirsiniz.
-* **Temperature:**
-  * `0.3 - 0.5`: Resmi metinler, belgesel seslendirmeleri.
-  * `0.7 - 0.8`: Doğal diyaloglar, podcast sohbetleri.
-* **Bellek Tasarrufu:** Uzun çıktılarda `bfloat16` veya `float16` hassasiyeti ve FlashAttention kullanılması önerilir.
-
----
-
-## 10. Sıkça Sorulan Sorular (SSS)
-* **Soru: VibeVoice GitHub Pages üzerinde canlı model çalıştırabilir mi?**  
-  **Cevap:** Hayır, GitHub Pages yalnızca statik web sayfalarını barındırır. Modelin çalışması için GPU sunucusu gereklidir. Web stüdyosu doğrudan GPU sunucunuzdaki API uç noktasına bağlanarak çalışır.
-* **Soru: Türkçe dil desteği var mı?**  
-  **Cevap:** Evet. Web stüdyosu hem tarayıcı içi doğal Türkçe ses motoruyla sıfır gecikmeyle çalışabilir hem de GPU sunucusundaki Türkçe Neural sesleri destekler.
-
----
-
-## 11. GPU Sunucusunda API Başlatma ve Web Stüdyosuna Bağlama
-
-Kendi yerel GPU makinenizde veya bulut sunucunuzda (RunPod, AWS, Colab vb.) API'yi başlatmak için:
-
-### 1. Sunucu Gereksinimlerini Yükleyin:
-```bash
-pip install fastapi uvicorn torch transformers soundfile edge-tts
-```
-
-### 2. API Sunucusunu Çalıştırın:
-```bash
-# VibeVoice GPU modelini otomatik yüklemek için:
-export AUTO_LOAD_MODEL=true  # Windows PowerShell: $env:AUTO_LOAD_MODEL="true"
+# 2. Sunucuyu başlatın
 python server.py
 ```
 Sunucu varsayılan olarak `http://0.0.0.0:8000` adresinde ayağa kalkar.
 
-### 3. Web Stüdyosuna Bağlayın:
-1. [Web Podcast Stüdyosu](https://mserman90.github.io/VibeVoice/) adresini açın.
-2. Sayfanın üstündeki **"VibeVoice GPU API Uç Noktası"** kutusuna sunucu adresinizi yazın:
-   * Yerel makine için: `http://localhost:8000`
-   * Uzak sunucu için (ngrok veya public IP): `https://xyz.ngrok-free.app`
-3. **"Sına & Bağlan"** butonuna tıklayın. Durum rozeti `🟢 Online (CUDA: RTX ...)` olduğunda, senaryonuzu yazıp **"⚡ VibeVoice GPU Sentezi"** butonuna basarak doğrudan GPU'dan ses üretebilirsiniz!
+---
 
+## 8. HTTPS & Tünelleme Rehberi (Cloudflare / ngrok)
+
+GitHub Pages güvenli **HTTPS** (`https://mserman90.github.io`) üzerinden yayın yaptığı için, yerel `http://localhost:8000` adresine yapılacak çağrılar tarayıcılar tarafından *Mixed Content / Karışık İçerik* sebebiyle engellenebilir. 
+
+Bunu çözmek için yerel sunucunuzu güvenli bir HTTPS tüneline bağlayabilirsiniz:
+
+### Yöntem 1: Cloudflare Tunnel (Önerilen & Ücretsiz)
+```bash
+cloudflared tunnel --url http://localhost:8000
+```
+Terminalde verilen `https://ornek-alan.trycloudflare.com` adresini stüdyodaki **GPU Uç Noktası** kutusuna yapıştırın.
+
+### Yöntem 2: ngrok
+```bash
+ngrok http 8000
+```
+Oluşan `https://xyz.ngrok-free.app` adresini stüdyoya girin.
+
+---
+
+## 9. Transkript ve Altyazı Dışa Aktarma
+* **Metin Transkripti (`.txt`):** Konuşma sırasına göre formatlanmış temiz metin transkripti.
+* **Altyazı Dosyası (`.srt`):** Video kurgu yazılımları (Premiere, DaVinci Resolve) ve video oynatıcılar için zaman damgalı senkron altyazı.
+* **Ses Dosyası (`.wav` / `.mp3`):** Üretilen podcast kaydı.
+
+---
+
+## 10. Sıkça Sorulan Sorular (SSS)
+
+**S: "GPU Sunucusuna Bağlanılamadı (Failed to fetch)" hatası neden olur?**  
+C: Bu durum yerel `server.py` dosyasının çalışmadığını veya HTTPS güvenlik kısıtlamasına takıldığını gösterir. PodcastLab'in güncel sürümünde bu durum otomatik algılanır ve pop-up çıkarmadan anında dahili Türkçe motoruna geçer.
+
+**S: Arka plandaki parazit/vınlama sesi nasıl çözüldü?**  
+C: Eski sürümdeki sentetik Web Audio sinüs osilatörleri tamamen kaldırıldı; sadece temiz Lo-Fi ve Chillhop ambiyans akışları entegre edildi.
+
+---
+
+**© 2026 PodcastLab · Microsoft Research VibeVoice Topluluk Geliştirmesi**  
+*Canlı Stüdyo:* [https://mserman90.github.io/VibeVoice/](https://mserman90.github.io/VibeVoice/)  
+*Web Kılavuzu:* [https://mserman90.github.io/VibeVoice/kilavuz.html](https://mserman90.github.io/VibeVoice/kilavuz.html)
