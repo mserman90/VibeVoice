@@ -14,9 +14,9 @@ from fastapi.responses import Response, StreamingResponse
 from pydantic import BaseModel
 
 app = FastAPI(
-    title="VibeVoice GPU Podcast API",
-    description="VibeVoice ve Türkçe Neural çok konuşmacılı ses sentezi API'si",
-    version="1.2.0"
+    title="PodcastLab GPU Podcast API",
+    description="PodcastLab ve VibeVoice Türkçe çok konuşmacılı ses sentezi API'si",
+    version="1.3.0"
 )
 
 # CORS: GitHub Pages ve tüm web istemcilerinden gelen isteklere izin ver

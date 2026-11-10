@@ -1,9 +1,9 @@
-# Microsoft VibeVoice - Türkçe Web Vitrini ve Kullanım Kılavuzu
+# PodcastLab - Çok Konuşmacılı Podcast ve Ses Üretim Stüdyosu
 
-Bu depo, Microsoft Research tarafından geliştirilen **VibeVoice** modelinin Türkçe tanıtım vitrinini, etkileşimli ses demolarını ve kapsamlı kullanım rehberini barındırır.
+Bu depo, Microsoft Research tarafından geliştirilen **VibeVoice** altyapısını kullanan **PodcastLab** stüdyosunu, Türkçe çok konuşmacılı ses sentezleyicisini, etkileşimli podcast arayüzünü ve kapsamlı kullanım rehberini barındırır.
 
 ## 🌐 Canlı Bağlantılar
-- 🚀 **Canlı Demo ve Sesler (GitHub Pages):** [https://mserman90.github.io/VibeVoice/](https://mserman90.github.io/VibeVoice/)
+- 🚀 **PodcastLab Canlı Stüdyo & Demo (GitHub Pages):** [https://mserman90.github.io/VibeVoice/](https://mserman90.github.io/VibeVoice/)
 - 📘 **Türkçe Kullanım Kılavuzu (Web):** [https://mserman90.github.io/VibeVoice/kilavuz.html](https://mserman90.github.io/VibeVoice/kilavuz.html)
 - 📄 **Markdown Kılavuz:** [KULLANIM_KILAVUZU.md](./KULLANIM_KILAVUZU.md)
 - 💻 **Orijinal Microsoft Deposu:** [microsoft/VibeVoice](https://github.com/microsoft/VibeVoice)

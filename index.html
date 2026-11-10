@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>VibeVoice Podcast Stüdyosu - Türkçe Çok Konuşmacılı Ses Sentezi</title>
+<title>PodcastLab - Çok Konuşmacılı Podcast & Ses Üretim Stüdyosu</title>
 
 <!-- Ön Yüklemeler -->
 <link rel="preload" as="audio" href="assets/audio/3p_gpt5.mp3">
@@ -691,12 +691,12 @@
   <div class="nav-container">
     <a href="#" class="brand" onclick="switchTab('studio')">
       <div class="brand-icon">
-        <i class="fa-solid fa-microphone-lines"></i>
+        <i class="fa-solid fa-flask"></i>
       </div>
       <div>
         <div style="display:flex; align-items:center; gap:8px;">
-          <span class="brand-name">VibeVoice Türkçe Stüdyo</span>
-          <span class="brand-badge"><i class="fa-solid fa-flag"></i> TR Destekli</span>
+          <span class="brand-name">PodcastLab</span>
+          <span class="brand-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Studio</span>
         </div>
       </div>
     </a>
@@ -705,7 +705,7 @@
     <div class="nav-tabs">
       <button class="tab-btn active" id="tab-studio" onclick="switchTab('studio')">
         <i class="fa-solid fa-sliders"></i>
-        <span>Podcast Stüdyosu</span>
+        <span>PodcastLab Stüdyo</span>
       </button>
       <button class="tab-btn" id="tab-showcase" onclick="switchTab('showcase')">
         <i class="fa-solid fa-headphones"></i>
@@ -738,8 +738,8 @@
     <!-- Hero Başlık -->
     <div class="studio-hero">
       <div class="hero-title">
-        <h1>Türkçe Çok Konuşmacılı Podcast Üretim Stüdyosu</h1>
-        <p>Yazdığınız Türkçe senaryoyu farklı karakterlerle, duygu geçişleriyle ve arka plan müziğiyle anında seslendirin.</p>
+        <h1>PodcastLab: Çok Konuşmacılı Podcast Üretim Stüdyosu</h1>
+        <p>VibeVoice altyapısıyla metinden zengin diyaloglu, uzun formatlı ve doğal Türkçe podcastler üretin.</p>
       </div>
       <div class="hero-badges">
         <div class="stat-badge"><i class="fa-solid fa-flag" style="color:#f43f5e;"></i> Doğal Türkçe Ses Motoru</div>
@@ -883,7 +883,7 @@
               <i class="fa-solid fa-play" id="play-icon"></i>
             </button>
             <div style="flex:1;">
-              <div style="font-weight:700; font-size:0.95rem; margin-bottom:2px;" id="track-title">Türkçe Podcast Oturumu</div>
+              <div style="font-weight:700; font-size:0.95rem; margin-bottom:2px;" id="track-title">PodcastLab Oturumu</div>
               <div class="time-display">
                 <span id="current-speaker-display">Konuşmacı: -</span> · <span id="current-line-counter">0 / 0 Satır</span>
               </div>
@@ -1049,7 +1049,7 @@
 <!-- Alt Bilgi -->
 <footer>
   <div style="margin-bottom:10px;">
-    <a href="#" onclick="switchTab('studio')">Türkçe Podcast Stüdyosu</a>
+    <a href="#" onclick="switchTab('studio')">PodcastLab Stüdyo</a>
     <span style="margin:0 8px; opacity:0.3;">·</span>
     <a href="#" onclick="switchTab('showcase')">Hazır Ses Vitrini</a>
     <span style="margin:0 8px; opacity:0.3;">·</span>
@@ -1057,13 +1057,13 @@
     <span style="margin:0 8px; opacity:0.3;">·</span>
     <a href="https://github.com/microsoft/VibeVoice" target="_blank">Microsoft VibeVoice Deposu</a>
   </div>
-  <div>&copy; 2026 VibeVoice Türkçe Ses Stüdyosu · Açık Kaynak Topluluk Geliştirmesi</div>
+  <div>&copy; 2026 PodcastLab · Çok Konuşmacılı Ses Yapay Zekası Stüdyosu</div>
 </footer>
 
 <script>
 /* ==================== TÜRKÇE SENARYO ŞABLONLARI ==================== */
 const TEMPLATES = {
-  "tr-ai": `[Mert]: Herkese selamlar, Podcast Stüdyomuza hoş geldiniz! Bugün yapay zeka modellerinin Türkçe konuşma yeteneklerini konuşuyoruz.
+  "tr-ai": `[Mert]: Herkese selamlar, PodcastLab stüdyomuza hoş geldiniz! Bugün yapay zeka modellerinin Türkçe konuşma yeteneklerini konuşuyoruz.
 [Selin]: Merhaba Mert! Evet, özellikle yeni nesil ses yapay zekalarıyla birlikte artık robotik tonlamalar tamamen tarihe karıştı.
 [Can]: [gülerek] Kesinlikle! Eskiden harflerin telaffuzu bile anlaşılmazdı, şimdiyse doğal nefes aralıkları ve duygu vurguları harika.
 [Mert]: [şaşkınlıkla] Şuna baksanıza, uzun dakikalar boyunca konuşmacı kimliğini hiç kaybetmeden akıcı diyalog kurabiliyor.
@@ -1162,7 +1162,7 @@ function saveVoiceSettings(){
 function testSpeakerVoice(spk){
   if(window.speechSynthesis) window.speechSynthesis.cancel();
   const samples = {
-    "Mert": "Merhaba! Ben Mert, VibeVoice Türkçe stüdyosundayım.",
+    "Mert": "Merhaba! Ben Mert, PodcastLab stüdyosundayım.",
     "Selin": "Selamlar! Ben Selin, yapay zeka ve ses modellemesi uzmanıyım.",
     "Can": "Herkese selam! Ben Can, bu haftaki podcast konuğuyum.",
     "Deniz": "İyi günler. Ben Deniz, bugünkü panelin moderatörüyüm."
@@ -1581,7 +1581,7 @@ async function startVibeVoiceGeneration(){
     document.getElementById('player-status-badge').innerText = "Yerleşik Motorla Çalınıyor";
     document.getElementById('player-status-badge').style.background = "rgba(16, 185, 129, 0.2)";
     document.getElementById('player-status-badge').style.color = "#34d399";
-    document.getElementById('track-title').innerText = "VibeVoice Türkçe Podcast (Canlı Ses)";
+    document.getElementById('track-title').innerText = "PodcastLab Türkçe Podcast (Canlı Ses)";
 
     // GPU sunucusu çalışmıyorsa kullanıcıyı popup ile rahatsız etmeden hemen Türkçe seslendiriciyi başlat
     startTurkishSpeech();
@@ -1699,14 +1699,14 @@ function initWaveformVisualizer(){
 /* ==================== DIŞA AKTARMA ==================== */
 function downloadTranscript(){
   if(!parsedLines.length){ alert("Lütfen önce bir podcast metni oluşturun."); return; }
-  let txt = "=== VIBEVOICE TÜRKÇE PODCAST TRANSKRİPTİ ===\n\n";
+  let txt = "=== PODCASTLAB TÜRKÇE PODCAST TRANSKRİPTİ ===\n\n";
   parsedLines.forEach((item, i) => {
     txt += `[${i+1}] ${item.speaker}: ${item.text}\n`;
   });
   const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = "VibeVoice_Turkce_Podcast.txt";
+  a.download = "PodcastLab_Turkce_Podcast.txt";
   a.click();
 }
 
@@ -1724,7 +1724,7 @@ function downloadSrt(){
   const blob = new Blob([srt], { type: 'text/plain;charset=utf-8' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = "VibeVoice_Turkce_Altyazi.srt";
+  a.download = "PodcastLab_Turkce_Altyazi.srt";
   a.click();
 }
 
@@ -1732,13 +1732,13 @@ function downloadAudioSample(){
   if(lastGpuAudioBlob){
     const a = document.createElement('a');
     a.href = URL.createObjectURL(lastGpuAudioBlob);
-    a.download = "VibeVoice_GPU_Podcast.wav";
+    a.download = "PodcastLab_GPU_Podcast.wav";
     a.click();
     return;
   }
   const a = document.createElement('a');
   a.href = "assets/audio/3p_gpt5.mp3";
-  a.download = "VibeVoice_Podcast_Ornek.mp3";
+  a.download = "PodcastLab_Podcast_Ornek.mp3";
   a.click();
 }
 
